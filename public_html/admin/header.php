@@ -9,12 +9,12 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle ?? 'Admin Dashboard'; ?> - AlixDeal</title>
+    <title><?php echo $pageTitle ?? 'Admin Dashboard'; ?> - AlixDeal Control Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
+            --primary: #FF5722;
+            --primary-hover: #E64A19;
             --bg: #F8FAFC;
             --sidebar: #0F172A;
             --surface: #FFFFFF;
@@ -31,7 +31,7 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
             min-height: 100vh;
         }
         .sidebar {
-            width: 250px;
+            width: 260px;
             background: var(--sidebar);
             color: #fff;
             display: flex;
@@ -39,7 +39,7 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
             flex-shrink: 0;
         }
         .brand {
-            padding: 24px 20px;
+            padding: 22px 20px;
             font-size: 18px;
             font-weight: 800;
             color: #fff;
@@ -52,16 +52,25 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
             list-style: none;
             padding: 16px 12px;
             flex: 1;
+            overflow-y: auto;
+        }
+        .nav-category {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 14px 4px;
         }
         .nav-item { margin-bottom: 4px; }
         .nav-item a {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 10px 14px;
             color: #94A3B8;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             border-radius: 10px;
             transition: all 0.2s;
@@ -72,6 +81,7 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
         }
         .nav-item.active a {
             background: var(--primary);
+            color: #fff;
         }
         .sidebar-footer {
             padding: 16px;
@@ -174,35 +184,55 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
 
 <aside class="sidebar">
     <div class="brand">
-        <span>🛍️</span>
+        <span>🔥</span>
         <span>AlixDeal Control</span>
     </div>
 
     <ul class="nav-links">
+        <li class="nav-category">Main Menu</li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'dashboard' ? 'active' : ''; ?>">
             <a href="index.php">📊 Dashboard</a>
         </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'products' ? 'active' : ''; ?>">
-            <a href="products.php">📦 Products</a>
+            <a href="products.php">📦 Products & Stock</a>
         </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'categories' ? 'active' : ''; ?>">
             <a href="categories.php">📁 Categories</a>
         </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'orders' ? 'active' : ''; ?>">
-            <a href="orders.php">🛒 Orders</a>
+            <a href="orders.php">🛒 Orders & Delivery</a>
         </li>
+
+        <li class="nav-category">Marketing & Storefront</li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'banners' ? 'active' : ''; ?>">
+            <a href="banners.php">🖼️ Hero Sliders & Banners</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'coupons' ? 'active' : ''; ?>">
+            <a href="coupons.php">🎟️ Coupons & Discounts</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'seo' ? 'active' : ''; ?>">
+            <a href="seo.php">🔍 SEO & Analytics</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'payment_settings' ? 'active' : ''; ?>">
+            <a href="payment_settings.php">💳 UPI & Payments</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'inquiries' ? 'active' : ''; ?>">
+            <a href="inquiries.php">💬 Customer Inquiries</a>
+        </li>
+
+        <li class="nav-category">System</li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'settings' ? 'active' : ''; ?>">
-            <a href="settings.php">⚙️ Settings</a>
+            <a href="settings.php">⚙️ Store Settings</a>
         </li>
         <li class="nav-item">
-            <a href="../index.php" target="_blank">🌐 View Storefront ↗</a>
+            <a href="../index.php" target="_blank">🌐 Live Storefront ↗</a>
         </li>
     </ul>
 
     <div class="sidebar-footer">
-        <div style="color: #94A3B8; margin-bottom: 8px;">Logged in as:</div>
+        <div style="color: #94A3B8; margin-bottom: 6px;">Logged in:</div>
         <strong style="color: #fff;"><?php echo htmlspecialchars($adminName); ?></strong>
-        <div style="margin-top: 12px;">
+        <div style="margin-top: 10px;">
             <a href="logout.php" style="color: #F87171; text-decoration: none; font-size: 13px; font-weight: 600;">Sign Out →</a>
         </div>
     </div>

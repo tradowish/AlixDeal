@@ -79,6 +79,42 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `value` TEXT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Banners / Hero Sliders Table
+CREATE TABLE IF NOT EXISTS `banners` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `title` VARCHAR(255) NOT NULL,
+  `subtitle` TEXT,
+  `badge_text` VARCHAR(50) DEFAULT 'HOT DEAL',
+  `button_text` VARCHAR(50) DEFAULT 'Shop Now',
+  `button_link` VARCHAR(255) DEFAULT '#products',
+  `image_url` VARCHAR(255),
+  `bg_color` VARCHAR(50) DEFAULT '#1E293B',
+  `sort_order` INT DEFAULT 0,
+  `is_active` TINYINT(1) DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Coupons & Promo Codes Table
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `code` VARCHAR(50) UNIQUE NOT NULL,
+  `discount_type` ENUM('percentage', 'flat') DEFAULT 'percentage',
+  `discount_value` DECIMAL(10,2) NOT NULL,
+  `min_spend` DECIMAL(10,2) DEFAULT 0.00,
+  `is_active` TINYINT(1) DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Customer Inquiries & Contact Table
+CREATE TABLE IF NOT EXISTS `inquiries` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(150) NOT NULL,
+  `phone` VARCHAR(30),
+  `email` VARCHAR(150),
+  `message` TEXT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Seed Categories
 INSERT IGNORE INTO `categories` (`id`, `name`, `slug`, `icon`) VALUES
 (1, 'Smart Electronics', 'smart-electronics', 'bolt'),
@@ -102,10 +138,32 @@ INSERT IGNORE INTO `products` (`id`, `sku`, `name`, `description`, `price`, `ori
 -- Seed Settings
 INSERT IGNORE INTO `settings` (`key_name`, `value`) VALUES
 ('site_name', 'AlixDeal Shopping'),
-('site_description', 'Exclusive daily deals on electronics, fashion, and home essentials.'),
+('site_description', 'India\'s favorite daily deals store for gadgets, apparel, and home essentials.'),
 ('currency_symbol', '₹'),
 ('contact_email', 'support@alixdeal.shop'),
 ('contact_phone', '+91 98765 43210'),
-('address', 'Mumbai, Maharashtra, India');
+('whatsapp_number', '+919876543210'),
+('address', 'Mumbai, Maharashtra, India'),
+('announcement_text', '⚡ Mega Festive Sale Live: Use code ALIXDEAL50 for 50% Off + Free Delivery All Over India!'),
+('meta_title', 'AlixDeal - Best Online Shopping Deals & Discounts in India'),
+('meta_description', 'Shop trending electronics, wireless chargers, bluetooth earbuds, fashion & smart home gadgets at up to 70% off with COD and fast delivery.'),
+('meta_keywords', 'online shopping india, electronics deals, bluetooth earbuds, smart watch, mobile charger, alixdeal discount shopping'),
+('google_analytics', ''),
+('header_scripts', ''),
+('footer_scripts', ''),
+('cod_enabled', '1'),
+('upi_enabled', '1'),
+('upi_id', 'alixdeal@upi');
+
+-- Seed Hero Banners (Sliders)
+INSERT IGNORE INTO `banners` (`id`, `title`, `subtitle`, `badge_text`, `button_text`, `button_link`, `image_url`, `bg_color`, `sort_order`, `is_active`) VALUES
+(1, 'Mega Festive Deal Carnival', 'Get Flat 50% OFF on all orders using coupon ALIXDEAL50 at checkout!', 'ALIX EXCLUSIVE', 'Shop Hot Deals', '#products', 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=700&q=80', '#0F172A', 1, 1),
+(2, 'Smart Electronics Extravaganza', 'Top Rated 3-in-1 Fast Wireless Chargers, TWS Earbuds & Smartwatches up to 70% OFF.', 'BESTSELLERS', 'Explore Gadgets', '#products', 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80', '#1E1B4B', 2, 1),
+(3, 'Free Delivery & Cash on Delivery', 'Fast doorstep shipping across India with 100% genuine quality guarantee.', 'PAN INDIA', 'Order Now', '#products', 'https://images.unsplash.com/photo-1556742049-0a67e557224f?w=700&q=80', '#064E3B', 3, 1);
+
+-- Seed Default Coupon
+INSERT IGNORE INTO `coupons` (`id`, `code`, `discount_type`, `discount_value`, `min_spend`, `is_active`) VALUES
+(1, 'ALIXDEAL50', 'percentage', 50.00, 0.00, 1),
+(2, 'SAVE100', 'flat', 100.00, 500.00, 1);
 
 SET FOREIGN_KEY_CHECKS=1;
