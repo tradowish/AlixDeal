@@ -282,6 +282,9 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
         <li class="nav-item <?php echo ($activeTab ?? '') === 'customers' ? 'active' : ''; ?>">
             <a href="customers.php">👥 Customers Directory</a>
         </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'users' ? 'active' : ''; ?>">
+            <a href="users.php">💰 Registered Users & Wallets</a>
+        </li>
 
         <li class="nav-category">Marketing & Storefront</li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'banners' ? 'active' : ''; ?>">
@@ -292,6 +295,9 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
         </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'reviews' ? 'active' : ''; ?>">
             <a href="reviews.php">⭐ Customer Reviews</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'notifications' ? 'active' : ''; ?>">
+            <a href="notifications.php">📢 Push Broadcasts</a>
         </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'seo' ? 'active' : ''; ?>">
             <a href="seo.php">🔍 SEO & Analytics</a>
@@ -306,7 +312,16 @@ $adminName = $_SESSION['admin_name'] ?? 'Admin';
             <a href="reports.php">📈 Sales & Revenue Reports</a>
         </li>
 
-        <li class="nav-category">System</li>
+        <li class="nav-category">System & Security</li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'smtp' ? 'active' : ''; ?>">
+            <a href="smtp.php">📧 SMTP Email Server</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'profile' ? 'active' : ''; ?>">
+            <a href="profile.php">🔐 Change Admin Password</a>
+        </li>
+        <li class="nav-item <?php echo ($activeTab ?? '') === 'debug' ? 'active' : ''; ?>">
+            <a href="debug.php">🩺 Diagnostics & Debug</a>
+        </li>
         <li class="nav-item <?php echo ($activeTab ?? '') === 'settings' ? 'active' : ''; ?>">
             <a href="settings.php">⚙️ Store Settings</a>
         </li>

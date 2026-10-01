@@ -14,9 +14,55 @@ CREATE TABLE IF NOT EXISTS `admins` (
 -- Categories Table
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `parent_id` INT DEFAULT 0,
   `name` VARCHAR(100) NOT NULL UNIQUE,
   `slug` VARCHAR(100) NOT NULL,
   `icon` VARCHAR(50) DEFAULT 'folder',
+  `image_url` TEXT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Registered Users / Customers Table
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(100) NOT NULL,
+  `phone` VARCHAR(20) NOT NULL UNIQUE,
+  `email` VARCHAR(100),
+  `password` VARCHAR(255) NOT NULL,
+  `wallet_balance` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `special_discount` DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  `status` ENUM('active', 'blocked') DEFAULT 'active',
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Wallet Transaction History Table
+CREATE TABLE IF NOT EXISTS `wallet_transactions` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `type` ENUM('credit', 'debit') NOT NULL,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- In-App Notifications & Broadcasts
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `message` TEXT NOT NULL,
+  `is_read` TINYINT(1) DEFAULT 0,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Admin Activity Logs / Audit Trail
+CREATE TABLE IF NOT EXISTS `activity_logs` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `admin_user` VARCHAR(50) NOT NULL,
+  `action` VARCHAR(100) NOT NULL,
+  `details` TEXT,
+  `ip_address` VARCHAR(50),
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -182,7 +228,22 @@ INSERT IGNORE INTO `settings` (`key_name`, `value`) VALUES
 ('social_instagram', 'https://instagram.com'),
 ('social_facebook', 'https://facebook.com'),
 ('social_youtube', 'https://youtube.com'),
-('social_telegram', 'https://t.me');
+('social_telegram', 'https://t.me'),
+('smtp_host', 'smtp.gmail.com'),
+('smtp_port', '587'),
+('smtp_user', ''),
+('smtp_pass', ''),
+('smtp_encryption', 'tls'),
+('smtp_from_name', 'AlixDeal Notifications'),
+('smtp_from_email', 'noreply@alixdeal.shop');
+
+-- Seed Sample Customer User (Phone: 9876543210, Pass: user123)
+INSERT IGNORE INTO `users` (`id`, `name`, `phone`, `email`, `password`, `wallet_balance`, `special_discount`, `status`) VALUES
+(1, 'Rahul Verma', '9876543210', 'rahul@example.com', '$2y$10$wK1Ww4p2597eZ4pE76Yn0eU5c3j.M1v4M33XU8hO61q3Z2a6q9k0m', 150.00, 5.00, 'active');
+
+-- Seed Sample Broadcast Notification
+INSERT IGNORE INTO `notifications` (`id`, `user_id`, `title`, `message`, `is_read`) VALUES
+(1, NULL, '⚡ Welcome to AlixDeal!', 'Get Flat 50% discount on your first order using code ALIXDEAL50. Happy shopping!', 0);
 
 -- Seed Hero Banners (Sliders)
 INSERT IGNORE INTO `banners` (`id`, `title`, `subtitle`, `badge_text`, `button_text`, `button_link`, `image_url`, `bg_color`, `sort_order`, `is_active`) VALUES

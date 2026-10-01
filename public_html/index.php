@@ -2,6 +2,7 @@
 /**
  * AlixDeal Shopping - Advanced Responsive Storefront
  */
+session_start();
 $rootDir = __DIR__;
 if (!file_exists($rootDir . '/config.php') || !file_exists($rootDir . '/.installed')) {
     header("Location: install/index.php");
@@ -10,6 +11,14 @@ if (!file_exists($rootDir . '/config.php') || !file_exists($rootDir . '/.install
 
 require_once $rootDir . '/config.php';
 $pdo = getDBConnection();
+
+// Current logged in customer user
+$currentUser = null;
+if (isset($_SESSION['user_id'])) {
+    $stmtU = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmtU->execute([$_SESSION['user_id']]);
+    $currentUser = $stmtU->fetch();
+}
 
 // Fetch settings
 $settings = [];
@@ -109,6 +118,9 @@ $products = $stmt->fetchAll();
     <?php if (!empty($settings['header_scripts'])): ?>
         <?php echo $settings['header_scripts']; ?>
     <?php endif; ?>
+
+    <!-- SweetAlert2 for Smooth Alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -797,12 +809,24 @@ $products = $stmt->fetchAll();
             <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search gadgets, earbuds, fashion...">
         </form>
 
-        <!-- Header Actions: Track Order & Cart -->
+        <!-- Header Actions: Track Order, User Sign-In / Account, Cart -->
         <div class="header-actions">
             <a href="track_order.php" class="btn-header btn-track">
                 <span>📦</span>
                 <span>Track Order</span>
             </a>
+
+            <?php if ($currentUser): ?>
+                <a href="my_account.php" class="btn-header btn-user" style="background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0;">
+                    <span>👋</span>
+                    <span><?php echo htmlspecialchars(explode(' ', $currentUser['name'])[0]); ?> (₹<?php echo number_format($currentUser['wallet_balance'], 0); ?>)</span>
+                </a>
+            <?php else: ?>
+                <button onclick="openAuthModal('login')" class="btn-header btn-user" style="background: #F8FAFC; color: var(--text-main); border: 1px solid var(--border);">
+                    <span>👤</span>
+                    <span>Sign In</span>
+                </button>
+            <?php endif; ?>
 
             <button onclick="openCartDrawer()" class="btn-header btn-cart">
                 <span>🛒</span>
@@ -823,12 +847,31 @@ $products = $stmt->fetchAll();
         <button class="drawer-close" onclick="toggleMobileDrawer()">✕</button>
     </div>
     <div class="drawer-body">
+        <?php if ($currentUser): ?>
+            <div style="background: #FFF1EE; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <div style="font-size: 11px; font-weight: 700; color: var(--primary);">LOGGED IN CUSTOMER</div>
+                <strong style="font-size: 14px;"><?php echo htmlspecialchars($currentUser['name']); ?></strong>
+                <div style="font-size: 12px; color: #059669; font-weight: 700; margin-top: 2px;">Wallet: ₹<?php echo number_format($currentUser['wallet_balance'], 2); ?></div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <a href="my_account.php" class="btn btn-sm" style="font-size: 11px; padding: 4px 10px;">My Account</a>
+                    <button onclick="handleLogout()" class="btn btn-sm btn-danger" style="font-size: 11px; padding: 4px 10px;">Sign Out</button>
+                </div>
+            </div>
+        <?php else: ?>
+            <button onclick="toggleMobileDrawer(); openAuthModal('login');" class="btn" style="width: 100%; margin-bottom: 12px; justify-content: center; font-size: 13px;">
+                👤 Sign In / Register (+₹50 Bonus)
+            </button>
+        <?php endif; ?>
+
         <form method="GET" action="index.php" style="margin-bottom: 14px;">
             <input type="text" name="q" placeholder="🔍 Search products..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
         </form>
 
         <a href="index.php" class="drawer-link <?php echo $catId === 0 ? 'active' : ''; ?>">🔥 All Hot Deals</a>
         <a href="track_order.php" class="drawer-link">📦 Track My Orders</a>
+        <?php if ($currentUser): ?>
+            <a href="my_account.php" class="drawer-link">💳 My Cash Wallet & Orders</a>
+        <?php endif; ?>
 
         <div class="drawer-category-title">Categories</div>
         <?php foreach ($categories as $cat): ?>
@@ -1012,6 +1055,15 @@ $products = $stmt->fetchAll();
             <input type="text" id="custName" placeholder="Full Name *" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
             <input type="tel" id="custPhone" placeholder="10-digit Mobile Number *" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
             <textarea id="custAddress" placeholder="Full Address, Landmark *" rows="2" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit;"></textarea>
+            <?php if ($currentUser && $currentUser['wallet_balance'] > 0): ?>
+                <div style="background: #ECFDF5; border: 1px solid #A7F3D0; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #065F46; cursor: pointer;">
+                        <input type="checkbox" id="useWalletCheck" onchange="toggleWalletDeduction(this)">
+                        💰 Use Wallet Balance (Available: ₹<?php echo number_format($currentUser['wallet_balance'], 2); ?>)
+                    </label>
+                </div>
+            <?php endif; ?>
+
             <div style="display: flex; gap: 6px; margin-bottom: 10px;">
                 <input type="text" id="custCity" placeholder="City *" style="flex: 1; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
                 <input type="text" id="custPincode" placeholder="PIN Code *" style="width: 100px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
@@ -1084,6 +1136,68 @@ $products = $stmt->fetchAll();
     </div>
 </div>
 
+<!-- User Auth Modal (Login / Signup) -->
+<div id="authModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 10000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px);">
+    <div style="background: #fff; border-radius: 20px; max-width: 400px; width: 100%; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); position: relative;">
+        <button onclick="closeAuthModal()" style="position: absolute; right: 16px; top: 16px; background: none; border: none; font-size: 20px; color: var(--text-sub); cursor: pointer;">✕</button>
+
+        <!-- Tabs -->
+        <div style="display: flex; gap: 6px; background: #F1F5F9; padding: 4px; border-radius: 12px; margin-bottom: 18px;">
+            <button id="authTabLogin" onclick="switchAuthTab('login')" style="flex: 1; padding: 8px; font-weight: 700; font-size: 13px; border-radius: 10px; border: none; background: #fff; color: var(--primary); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Sign In</button>
+            <button id="authTabSignup" onclick="switchAuthTab('signup')" style="flex: 1; padding: 8px; font-weight: 700; font-size: 13px; border-radius: 10px; border: none; background: transparent; color: var(--text-sub); cursor: pointer;">Register (+₹50)</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="authLoginForm">
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Welcome Back! 👋</h3>
+            <p style="color: var(--text-sub); font-size: 12px; margin-bottom: 16px;">Sign in with your mobile number to access your orders and cash wallet.</p>
+
+            <form onsubmit="handleLoginSubmit(event)">
+                <div style="margin-bottom: 12px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Mobile Number *</label>
+                    <input type="tel" id="loginPhone" placeholder="10-digit mobile number" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Password *</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <button type="submit" id="loginSubmitBtn" style="width: 100%; padding: 11px; background: var(--primary); color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 8px; cursor: pointer;">
+                    Sign In →
+                </button>
+            </form>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="authSignupForm" style="display: none;">
+            <div style="display: inline-block; background: #ECFDF5; color: #065F46; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-bottom: 6px;">🎁 FREE ₹50 WALLET BONUS</div>
+            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Create Customer Account</h3>
+            <p style="color: var(--text-sub); font-size: 12px; margin-bottom: 16px;">Instant signup for seamless order tracking and member discounts.</p>
+
+            <form onsubmit="handleSignupSubmit(event)">
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Full Name *</label>
+                    <input type="text" id="signupName" placeholder="Your name" required style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Mobile Number *</label>
+                    <input type="tel" id="signupPhone" placeholder="10-digit mobile number" required style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Email (Optional)</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px;">Password *</label>
+                    <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+                </div>
+                <button type="submit" id="signupSubmitBtn" style="width: 100%; padding: 11px; background: #10B981; color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 8px; cursor: pointer;">
+                    🎉 Create Account & Get ₹50
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Floating WhatsApp Widget -->
 <?php if (($settings['whatsapp_floating_widget'] ?? '1') === '1'): ?>
     <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $whatsapp); ?>?text=<?php echo urlencode('Hello! I have a question about AlixDeal products.'); ?>" target="_blank" class="floating-wa-btn" title="Chat on WhatsApp">
@@ -1132,6 +1246,152 @@ $products = $stmt->fetchAll();
     const upiName = '<?php echo htmlspecialchars($settings['upi_name'] ?? 'AlixDeal'); ?>';
     const bharatpeId = '<?php echo htmlspecialchars($settings['bharatpe_merchant_id'] ?? ''); ?>';
     const razorpayKey = '<?php echo htmlspecialchars($settings['razorpay_key_id'] ?? ''); ?>';
+
+    const loggedUser = <?php echo json_encode($currentUser ? [
+        'id' => (int)$currentUser['id'],
+        'name' => $currentUser['name'],
+        'phone' => $currentUser['phone'],
+        'wallet' => (float)$currentUser['wallet_balance'],
+        'discount' => (float)$currentUser['special_discount']
+    ] : null); ?>;
+
+    let walletDeducted = 0;
+
+    function openAuthModal(tab = 'login') {
+        const modal = document.getElementById('authModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            switchAuthTab(tab);
+        }
+    }
+
+    function closeAuthModal() {
+        const modal = document.getElementById('authModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function switchAuthTab(tab) {
+        const loginTab = document.getElementById('authTabLogin');
+        const signupTab = document.getElementById('authTabSignup');
+        const loginForm = document.getElementById('authLoginForm');
+        const signupForm = document.getElementById('authSignupForm');
+
+        if (tab === 'login') {
+            loginTab.style.background = '#fff';
+            loginTab.style.color = 'var(--primary)';
+            signupTab.style.background = 'transparent';
+            signupTab.style.color = 'var(--text-sub)';
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
+        } else {
+            signupTab.style.background = '#fff';
+            signupTab.style.color = 'var(--primary)';
+            loginTab.style.background = 'transparent';
+            loginTab.style.color = 'var(--text-sub)';
+            signupForm.style.display = 'block';
+            loginForm.style.display = 'none';
+        }
+    }
+
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pass = document.getElementById('loginPassword').value.trim();
+
+        try {
+            const resp = await fetch('api/auth.php?action=login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phone, password: pass })
+            });
+            const res = await resp.json();
+            if (res.status === 'success') {
+                closeAuthModal();
+                Swal.fire({
+                    title: 'Welcome Back! 🎉',
+                    text: res.message,
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Login Failed', res.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Error', 'Network error. Please try again.', 'error');
+        }
+    }
+
+    async function handleSignupSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('signupName').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const pass = document.getElementById('signupPassword').value.trim();
+
+        try {
+            const resp = await fetch('api/auth.php?action=signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name, phone: phone, email: email, password: pass })
+            });
+            const res = await resp.json();
+            if (res.status === 'success') {
+                closeAuthModal();
+                Swal.fire({
+                    title: 'Account Created! 🎁',
+                    text: res.message,
+                    icon: 'success',
+                    confirmButtonColor: '#FF5722',
+                    confirmButtonText: 'Start Shopping'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Signup Failed', res.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Error', 'Network error. Please try again.', 'error');
+        }
+    }
+
+    function handleLogout() {
+        Swal.fire({
+            title: 'Sign out?',
+            text: 'Are you sure you want to log out of your account?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#FF5722',
+            confirmButtonText: 'Yes, Sign Out'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                await fetch('api/auth.php?action=logout');
+                Swal.fire({
+                    title: 'Signed Out',
+                    text: 'You have been logged out.',
+                    icon: 'success',
+                    timer: 1200,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            }
+        });
+    }
+
+    function toggleWalletDeduction(cb) {
+        if (!loggedUser) return;
+        const totalItems = cart.reduce((acc, it) => acc + (it.price * it.quantity), 0);
+        const subtotal = totalItems - (totalItems * (discountPercent / 100));
+        if (cb.checked) {
+            walletDeducted = Math.min(loggedUser.wallet, subtotal);
+        } else {
+            walletDeducted = 0;
+        }
+        renderCart();
+    }
 
     // Toggle Mobile Drawer Menu
     function toggleMobileDrawer() {
