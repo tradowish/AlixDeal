@@ -195,15 +195,15 @@ INSERT IGNORE INTO `products` (`id`, `sku`, `name`, `description`, `price`, `ori
 
 -- Seed Settings
 INSERT IGNORE INTO `settings` (`key_name`, `value`) VALUES
-('site_name', 'AlixDeal Shopping'),
+('site_name', 'Alixdeal'),
 ('site_description', 'India\'s favorite daily deals store for gadgets, apparel, and home essentials.'),
 ('currency_symbol', '₹'),
 ('contact_email', 'support@alixdeal.shop'),
-('contact_phone', '+91 98765 43210'),
-('whatsapp_number', '+919876543210'),
-('address', 'Mumbai, Maharashtra, India'),
+('contact_phone', '+91 7351150482'),
+('whatsapp_number', '+917351150482'),
+('address', 'Village Bajheri, City Muzaffarnagar, PIN 251001'),
 ('announcement_text', '⚡ Mega Festive Sale Live: Use code ALIXDEAL50 for 50% Off + Free Delivery All Over India!'),
-('meta_title', 'AlixDeal - Best Online Shopping Deals & Discounts in India'),
+('meta_title', 'Alixdeal - Best Online Shopping Deals & Discounts in India'),
 ('meta_description', 'Shop trending electronics, wireless chargers, bluetooth earbuds, fashion & smart home gadgets at up to 70% off with COD and fast delivery.'),
 ('meta_keywords', 'online shopping india, electronics deals, bluetooth earbuds, smart watch, mobile charger, alixdeal discount shopping'),
 ('google_analytics', ''),

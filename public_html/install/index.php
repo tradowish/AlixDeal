@@ -417,7 +417,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $dbUser = trim($_POST['db_user'] ?? '');
     $dbPass = $_POST['db_pass'] ?? '';
 
-    $siteName = trim($_POST['site_name'] ?? 'AlixDeal Shopping');
+    $siteName = trim($_POST['site_name'] ?? 'Alixdeal');
     $adminName = trim($_POST['admin_name'] ?? 'Super Admin');
     $adminUser = trim($_POST['admin_user'] ?? 'admin');
     $adminEmail = trim($_POST['admin_email'] ?? 'admin@alixdeal.shop');
@@ -987,7 +987,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
                     <div class="form-group">
                         <label>Store / Site Name</label>
-                        <input type="text" name="site_name" id="site_name" value="<?php echo htmlspecialchars($_POST['site_name'] ?? 'AlixDeal Shopping'); ?>" required>
+                        <input type="text" name="site_name" id="site_name" value="<?php echo htmlspecialchars($_POST['site_name'] ?? 'Alixdeal'); ?>" required>
                     </div>
 
                     <div class="grid-2">

@@ -2,14 +2,12 @@ Options -Indexes +FollowSymLinks
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # 1. Do not redirect POST requests or install requests
-    RewriteCond %{REQUEST_METHOD} !POST
-    RewriteCond %{REQUEST_URI} !install [NC]
-    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
-    RewriteRule ^ %1/ [R=301,L]
+    # Prevent duplicate public_html paths
+    RewriteCond %{THE_REQUEST} /public_html/public_html/ [NC]
+    RewriteRule ^public_html/(.*)$ $1 [R=301,L]
 
-    # 2. If public_html directory is present, route clean requests through public_html
-    RewriteCond %{REQUEST_URI} !^/public_html/
+    # If accessed directly at domain root, route to public_html only if not already inside public_html
+    RewriteCond %{REQUEST_URI} !^/public_html/ [NC]
     RewriteCond %{DOCUMENT_ROOT}/public_html -d
     RewriteRule ^(.*)$ public_html/$1 [L]
 </IfModule>

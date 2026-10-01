@@ -26,9 +26,9 @@ $stmt = $pdo->query("SELECT key_name, value FROM settings");
 while ($row = $stmt->fetch()) {
     $settings[$row['key_name']] = $row['value'];
 }
-$siteName = $settings['site_name'] ?? 'AlixDeal Shopping';
+$siteName = $settings['site_name'] ?? 'Alixdeal';
 $currency = $settings['currency_symbol'] ?? '₹';
-$whatsapp = $settings['whatsapp_number'] ?? '+919876543210';
+$whatsapp = $settings['whatsapp_number'] ?? '+917351150482';
 $announcement = $settings['announcement_text'] ?? '⚡ Special Festive Offer: Free Delivery All Over India + 50% Off With Code ALIXDEAL50!';
 
 // Active Banners for Hero Slider
@@ -997,10 +997,6 @@ $products = $stmt->fetchAll();
                         <button class="btn-card-buy" onclick="addToCart(<?php echo htmlspecialchars(json_encode($p)); ?>)">
                             ⚡ Buy / Add to Cart
                         </button>
-
-                        <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $whatsapp); ?>?text=<?php echo $waMsg; ?>" target="_blank" class="btn-whatsapp">
-                            💬 Order on WhatsApp
-                        </a>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -1224,9 +1220,9 @@ $products = $stmt->fetchAll();
             <h4>Customer Support</h4>
             <ul>
                 <li>Email: <?php echo htmlspecialchars($settings['contact_email'] ?? 'support@alixdeal.shop'); ?></li>
-                <li>Phone: <?php echo htmlspecialchars($settings['contact_phone'] ?? '+91 98765 43210'); ?></li>
+                <li>Phone: <?php echo htmlspecialchars($settings['contact_phone'] ?? '+91 7351150482'); ?></li>
                 <li>WhatsApp: <?php echo htmlspecialchars($whatsapp); ?></li>
-                <li>Location: <?php echo htmlspecialchars($settings['address'] ?? 'Mumbai, India'); ?></li>
+                <li>Location: <?php echo htmlspecialchars($settings['address'] ?? 'Village Bajheri, City Muzaffarnagar, PIN 251001'); ?></li>
             </ul>
         </div>
     </div>
