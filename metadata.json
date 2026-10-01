@@ -1,0 +1,8 @@
+{
+  "name": "Remix: AlixDeal Shopping",
+  "description": "Browse exclusive deals and shop your favorite products from alixdeal.shop directly on your mobile device.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
