@@ -144,11 +144,14 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
 
         /* Header Navigation */
         .header {
-            background: var(--surface);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
         .nav-container {
             max-width: 1200px;
@@ -164,15 +167,56 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
             align-items: center;
             gap: 12px;
         }
-        .hamburger-btn {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 20px;
+
+        /* --- ULTRA-PREMIUM TACTILE BACK BUTTON --- */
+        .btn-back-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px 8px 12px;
+            background: #FFFFFF;
+            color: #0F172A;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
-            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
         }
+        .btn-back-modern .back-icon-wrap {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF5722;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+        }
+        .btn-back-modern:hover {
+            border-color: #FF5722;
+            color: #FF5722;
+            background: #FFFBF9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 87, 34, 0.15);
+        }
+        .btn-back-modern:hover .back-icon-wrap {
+            transform: translateX(-3px);
+            background: #FF5722;
+            color: #FFFFFF;
+        }
+        .btn-back-modern:active {
+            transform: scale(0.93);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
         .logo {
             font-size: 20px;
             font-weight: 800;
@@ -181,7 +225,10 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: transform 0.2s;
         }
+        .logo:active { transform: scale(0.96); }
+
         .header-actions {
             display: flex;
             align-items: center;
@@ -191,16 +238,185 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: 999px;
             text-decoration: none;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             border: none;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-track { background: #EEF2FF; color: var(--primary); }
-        .btn-cart { background: var(--primary); color: #fff; }
+        .btn-header:active { transform: scale(0.94); }
+        .btn-track { background: #EEF2FF; color: #4338CA; }
+        .btn-track:hover { background: #E0E7FF; color: #3730A3; }
+        .btn-cart {
+            background: linear-gradient(135deg, #FF5722, #EA580C);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+        }
+        .btn-cart:hover {
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* --- TOUCH FEEDBACK & RIPPLE SYSTEM --- */
+        .touch-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            transform: scale(0);
+            animation: rippleAnim 0.55s ease-out;
+            pointer-events: none;
+        }
+        .touch-ripple.dark {
+            background: rgba(15, 23, 42, 0.15);
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(3.5);
+                opacity: 0;
+            }
+        }
+
+        /* Button Press Animations */
+        button, .btn-add-cart, .btn-submit-review, .qty-btn, .pill-option, .slide-btn {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.12s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s ease, background-color 0.2s;
+        }
+        button:active, .btn-add-cart:active, .qty-btn:active, .pill-option:active {
+            transform: scale(0.94) !important;
+        }
+
+        /* Quantity Picker Upgrades */
+        .qty-picker {
+            display: flex;
+            align-items: center;
+            border: 2px solid #E2E8F0;
+            border-radius: 14px;
+            background: #F8FAFC;
+            padding: 4px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+        .qty-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: none;
+            background: #FFFFFF;
+            font-weight: 800;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0F172A;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .qty-btn:hover {
+            background: #FF5722;
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .qty-btn:active {
+            transform: scale(0.88) !important;
+        }
+
+        /* Add to Cart Premium Shimmer */
+        .btn-add-cart {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+            box-shadow: 0 8px 22px rgba(255, 87, 34, 0.38);
+        }
+        .btn-add-cart::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 50%;
+            height: 200%;
+            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(25deg);
+            animation: btnShimmer 3.5s infinite;
+        }
+        @keyframes btnShimmer {
+            0% { left: -60%; }
+            20% { left: 140%; }
+            100% { left: 140%; }
+        }
+
+        /* Mobile Sticky Buy Action Bar */
+        .mobile-sticky-action-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-top: 1px solid #E2E8F0;
+            padding: 10px 16px;
+            z-index: 999;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        @media (max-width: 768px) {
+            .mobile-sticky-action-bar {
+                display: flex;
+            }
+            body {
+                padding-bottom: 70px;
+            }
+        }
+        .mobile-bar-price {
+            display: flex;
+            flex-direction: column;
+        }
+        .mobile-bar-price .label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #64748B;
+            text-transform: uppercase;
+        }
+        .mobile-bar-price .val {
+            font-size: 20px;
+            font-weight: 800;
+            color: #FF5722;
+            line-height: 1.1;
+        }
+        .mobile-bar-btn {
+            flex: 1;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #FF5722, #E64A19);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(255, 87, 34, 0.4);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mobile-bar-btn:active {
+            transform: scale(0.95);
+        }
 
         /* Breadcrumbs */
         .breadcrumb {
@@ -211,7 +427,7 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
             color: var(--text-sub);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         .breadcrumb a { color: var(--text-sub); text-decoration: none; font-weight: 600; }
@@ -563,26 +779,36 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
 <header class="header">
     <div class="nav-container">
         <div class="nav-left">
+            <a href="index.php" class="btn-back-modern" title="Go back to store">
+                <span class="back-icon-wrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </span>
+                <span>Back to Shop</span>
+            </a>
             <a href="index.php" class="logo">
                 <span>🔥</span>
                 <span><?php echo htmlspecialchars($siteName); ?></span>
             </a>
         </div>
         <div class="header-actions">
-            <a href="index.php" class="btn-header" style="background:#F1F5F9; color:var(--text-main);">← Back to Deals</a>
-            <a href="track_order.php" class="btn-header btn-track">📦 Track Order</a>
-            <a href="index.php" class="btn-header btn-cart">🛒 View Cart</a>
+            <a href="track_order.php" class="btn-header btn-track">📦 Track</a>
+            <a href="index.php?open_cart=1" class="btn-header btn-cart">🛒 Cart</a>
         </div>
     </div>
 </header>
 
 <!-- Breadcrumbs -->
 <div class="breadcrumb">
-    <a href="index.php">Home</a>
-    <span>/</span>
+    <a href="index.php" style="display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Shop Home
+    </a>
+    <span style="color:#94A3B8;">›</span>
     <a href="index.php?cat=<?php echo $product['category_id'] ?? 1; ?>"><?php echo htmlspecialchars($product['category_name'] ?? 'Deals'); ?></a>
-    <span>/</span>
-    <strong style="color: var(--text-main);"><?php echo htmlspecialchars($product['name']); ?></strong>
+    <span style="color:#94A3B8;">›</span>
+    <strong style="color: var(--text-main); font-weight:700;"><?php echo htmlspecialchars($product['name']); ?></strong>
 </div>
 
 <!-- Product Main Container -->
@@ -747,17 +973,64 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
     </div>
 </footer>
 
+<!-- Mobile Sticky Action Bar for One-Thumb Buying -->
+<div class="mobile-sticky-action-bar">
+    <div class="mobile-bar-price">
+        <span class="label">Total Price</span>
+        <span class="val"><?php echo $currency; ?><?php echo number_format($product['price'], 2); ?></span>
+    </div>
+    <button type="button" class="mobile-bar-btn" onclick="buyThisProduct()">
+        <span>⚡</span>
+        <span>Buy / Add to Cart</span>
+    </button>
+</div>
+
 <script>
     let currentQty = 1;
     let selectedColor = '<?php echo htmlspecialchars($colors[0] ?? "Standard"); ?>';
     let selectedSize = '<?php echo htmlspecialchars($sizes[0] ?? "Standard"); ?>';
 
+    // Touch Feedback & Physical Haptic Engine
+    function triggerHaptic(ms = 12) {
+        if ('vibrate' in navigator) {
+            try { navigator.vibrate(ms); } catch (e) {}
+        }
+    }
+
+    // Dynamic Touch Ripple Effect
+    document.addEventListener('pointerdown', function(e) {
+        const btn = e.target.closest('button, .btn-back-modern, .btn-header, .pill-option, .qty-btn, .mobile-bar-btn, .related-card, .btn-submit-review');
+        if (!btn) return;
+        
+        triggerHaptic(10);
+
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.classList.add('touch-ripple');
+        if (btn.classList.contains('btn-back-modern') || btn.classList.contains('pill-option') || btn.classList.contains('qty-btn')) {
+            ripple.classList.add('dark');
+        }
+
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+        ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+
     function changeQty(delta) {
+        triggerHaptic(15);
         currentQty = Math.max(1, currentQty + delta);
-        document.getElementById('qtyVal').textContent = currentQty;
+        const qtyEl = document.getElementById('qtyVal');
+        qtyEl.textContent = currentQty;
+        qtyEl.style.transform = 'scale(1.2)';
+        setTimeout(() => qtyEl.style.transform = 'scale(1)', 150);
     }
 
     function selectVariant(type, btn, val) {
+        triggerHaptic(12);
         const parent = btn.parentElement;
         parent.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
@@ -771,6 +1044,7 @@ $sizes = array_filter(array_map('trim', explode(',', $product['sizes'] ?: 'Stand
     }
 
     function buyThisProduct() {
+        triggerHaptic(25);
         let cart = JSON.parse(localStorage.getItem('alixdeal_cart') || '[]');
         const existing = cart.find(it => it.id === <?php echo $product['id']; ?> && it.color === selectedColor && it.size === selectedSize);
         if (existing) {

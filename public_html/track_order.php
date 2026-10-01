@@ -54,13 +54,73 @@ if (!empty($searchQuery)) {
             flex-direction: column;
         }
         .header {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
-            padding: 16px 24px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* --- TACTILE BACK BUTTON --- */
+        .btn-back-modern {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px 8px 12px;
+            background: #FFFFFF;
+            color: #0F172A;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-back-modern .back-icon-wrap {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF5722;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
+        }
+        .btn-back-modern:hover {
+            border-color: #FF5722;
+            color: #FF5722;
+            background: #FFFBF9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(255, 87, 34, 0.15);
+        }
+        .btn-back-modern:hover .back-icon-wrap {
+            transform: translateX(-3px);
+            background: #FF5722;
+            color: #FFFFFF;
+        }
+        .btn-back-modern:active {
+            transform: scale(0.93) !important;
+        }
+
         .logo {
             font-size: 20px;
             font-weight: 800;
@@ -69,10 +129,13 @@ if (!empty($searchQuery)) {
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: transform 0.2s;
         }
+        .logo:active { transform: scale(0.96); }
+
         .container {
             max-width: 800px;
-            margin: 36px auto;
+            margin: 28px auto;
             padding: 0 16px;
             width: 100%;
             flex: 1;
@@ -80,24 +143,58 @@ if (!empty($searchQuery)) {
         .card {
             background: #fff;
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
         }
         .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 20px;
-            background: var(--primary);
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FF5722, #EA580C);
             color: white;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
             border: none;
             cursor: pointer;
+            box-shadow: 0 4px 14px rgba(255, 87, 34, 0.35);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.45);
+        }
+        .btn:active {
+            transform: scale(0.93) !important;
+        }
+
+        /* --- TOUCH FEEDBACK & RIPPLE --- */
+        .touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            transform: scale(0);
+            animation: rippleAnim 0.55s ease-out;
+            pointer-events: none;
+        }
+        .touch-ripple.dark {
+            background: rgba(15, 23, 42, 0.15);
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(3.5);
+                opacity: 0;
+            }
         }
         .progress-track {
             display: flex;
@@ -159,11 +256,25 @@ if (!empty($searchQuery)) {
 <body>
 
 <header class="header">
-    <a href="index.php" class="logo">
-        <span>🔥</span>
-        <span><?php echo htmlspecialchars($settings['site_name'] ?? 'AlixDeal'); ?></span>
-    </a>
-    <a href="index.php" style="text-decoration: none; color: var(--primary); font-weight: 700; font-size: 14px;">← Back to Store</a>
+    <div class="header-left">
+        <a href="index.php" class="btn-back-modern" title="Go back to store">
+            <span class="back-icon-wrap">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 18l-6-6 6-6"/>
+                </svg>
+            </span>
+            <span>Back to Store</span>
+        </a>
+        <a href="index.php" class="logo">
+            <span>🔥</span>
+            <span><?php echo htmlspecialchars($settings['site_name'] ?? 'AlixDeal'); ?></span>
+        </a>
+    </div>
+    <div>
+        <a href="index.php?open_cart=1" class="btn-back-modern" style="padding: 8px 14px;">
+            🛒 View Cart
+        </a>
+    </div>
 </header>
 
 <div class="container">
@@ -266,6 +377,37 @@ if (!empty($searchQuery)) {
 <footer style="text-align: center; padding: 24px; color: var(--text-sub); font-size: 13px; border-top: 1px solid var(--border); background: #fff;">
     © <?php echo date('Y'); ?> <?php echo htmlspecialchars($settings['site_name'] ?? 'AlixDeal'); ?>. All Rights Reserved.
 </footer>
+
+<script>
+    function triggerHaptic(ms = 12) {
+        if ('vibrate' in navigator) {
+            try { navigator.vibrate(ms); } catch (e) {}
+        }
+    }
+
+    // Dynamic Touch Ripple Effect
+    document.addEventListener('pointerdown', function(e) {
+        const btn = e.target.closest('button, .btn, .btn-back-modern, input[type="submit"]');
+        if (!btn) return;
+        
+        triggerHaptic(10);
+
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.classList.add('touch-ripple');
+        if (btn.classList.contains('btn-back-modern')) {
+            ripple.classList.add('dark');
+        }
+
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+        ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+</script>
 
 </body>
 </html>

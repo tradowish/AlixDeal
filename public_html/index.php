@@ -446,22 +446,30 @@ $products = $stmt->fetchAll();
             font-weight: 800;
         }
         .drawer-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            width: 32px;
-            height: 32px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            color: #94A3B8;
+            font-weight: 700;
+            color: #E2E8F0;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .drawer-close:hover {
-            background: rgba(239, 68, 68, 0.2);
+            background: rgba(239, 68, 68, 0.25);
             color: #EF4444;
+            transform: rotate(90deg) scale(1.08);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+        .drawer-close:active {
+            transform: scale(0.9) !important;
         }
         .drawer-body {
             padding: 18px 14px;
@@ -860,19 +868,33 @@ $products = $stmt->fetchAll();
         }
         .btn-card-buy {
             width: 100%;
-            padding: 8px 0;
-            background: var(--primary);
+            padding: 9px 0;
+            background: linear-gradient(135deg, #FF5722 0%, #EA580C 100%);
             color: #fff;
-            font-weight: 700;
-            font-size: 12px;
-            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12.5px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
             margin-bottom: 6px;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.28);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-card-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 87, 34, 0.42);
+        }
+        .btn-card-buy:active {
+            transform: scale(0.94) !important;
+            box-shadow: 0 2px 6px rgba(255, 87, 34, 0.2);
         }
         .btn-whatsapp {
             width: 100%;
-            padding: 6px 0;
+            padding: 7px 0;
             background: #25D366;
             color: #fff;
             font-weight: 700;
@@ -883,113 +905,55 @@ $products = $stmt->fetchAll();
             align-items: center;
             justify-content: center;
             gap: 4px;
+            transition: all 0.15s ease;
         }
+        .btn-whatsapp:active { transform: scale(0.95); }
 
-        /* --- PREMIUM CART & CHECKOUT DRAWER --- */
-        .cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .cart-overlay.open { display: block; opacity: 1; }
-        .cart-drawer {
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            max-width: 450px;
-            background: #FFFFFF;
-            z-index: 1001;
-            transform: translateX(100%);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
-        }
-        .cart-drawer.open { transform: translateX(0); }
-        .cart-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #FFFFFF;
-        }
-        .cart-header h3 {
-            font-size: 16px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cart-free-shipping-bar {
-            background: linear-gradient(90deg, #ECFDF5 0%, #D1FAE5 100%);
-            border-bottom: 1px solid #A7F3D0;
-            padding: 9px 18px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #065F46;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cart-body {
-            padding: 16px;
-            flex: 1;
-            overflow-y: auto;
-            background: #F8FAFC;
-        }
-        .cart-item-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            transition: all 0.2s;
-        }
-        .cart-item-card:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-        .cart-item-card img {
-            width: 64px;
-            height: 64px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1px solid var(--border);
-        }
-        .cart-footer {
-            padding: 18px 20px;
-            border-top: 1px solid var(--border);
-            background: #FFFFFF;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
-        }
+        /* --- TACTILE CLOSE DRAWER BUTTON --- */
         .close-drawer {
             background: #F1F5F9;
-            border: none;
-            width: 32px;
-            height: 32px;
+            border: 1.5px solid #E2E8F0;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
             cursor: pointer;
-            color: var(--text-sub);
-            transition: all 0.2s;
+            color: #475569;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .close-drawer:hover {
             background: #FEE2E2;
             color: #DC2626;
+            border-color: #FCA5A5;
+            transform: rotate(90deg) scale(1.08);
+        }
+        .close-drawer:active {
+            transform: scale(0.88) !important;
+        }
+
+        /* --- TOUCH FEEDBACK & RIPPLE --- */
+        .touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            transform: scale(0);
+            animation: rippleAnim 0.55s ease-out;
+            pointer-events: none;
+        }
+        .touch-ripple.dark {
+            background: rgba(15, 23, 42, 0.15);
+        }
+        @keyframes rippleAnim {
+            to {
+                transform: scale(3.5);
+                opacity: 0;
+            }
         }
 
         /* Order Success Modal */
@@ -2081,6 +2045,36 @@ $products = $stmt->fetchAll();
     if (new URLSearchParams(window.location.search).get('open_cart') === '1') {
         openCartDrawer();
     }
+
+    // Touch Feedback & Physical Haptic Engine
+    function triggerHaptic(ms = 12) {
+        if ('vibrate' in navigator) {
+            try { navigator.vibrate(ms); } catch (e) {}
+        }
+    }
+
+    // Dynamic Touch Ripple Effect on all interactive elements
+    document.addEventListener('pointerdown', function(e) {
+        const btn = e.target.closest('button, .btn-card-buy, .btn-header, .slide-btn, .category-chip, .mob-nav-item, .drawer-close, .close-drawer, .btn-whatsapp');
+        if (!btn) return;
+        
+        triggerHaptic(10);
+
+        const rect = btn.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        ripple.classList.add('touch-ripple');
+        if (btn.classList.contains('close-drawer') || btn.classList.contains('category-chip')) {
+            ripple.classList.add('dark');
+        }
+
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+        ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+        btn.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
 </script>
 
 </body>

@@ -120,15 +120,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 13px;
             margin-bottom: 20px;
         }
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
+        .btn-back-store {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 18px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
             color: var(--text-muted);
             font-size: 13px;
+            font-weight: 600;
             text-decoration: none;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
         }
-        .back-link:hover { color: #fff; }
+        .btn-back-store:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: #64748B;
+            transform: translateY(-1px);
+        }
+        .btn-back-store:active {
+            transform: scale(0.95);
+        }
+        .btn-back-store svg {
+            transition: transform 0.2s;
+        }
+        .btn-back-store:hover svg {
+            transform: translateX(-3px);
+        }
     </style>
 </head>
 <body>
@@ -157,7 +181,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit" class="btn">Sign In to Dashboard →</button>
     </form>
 
-    <a href="../index.php" class="back-link">← Back to Storefront</a>
+    <a href="../index.php" class="btn-back-store">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        <span>Return to Storefront</span>
+    </a>
 </div>
 
 </body>
