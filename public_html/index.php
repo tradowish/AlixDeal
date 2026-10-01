@@ -20,7 +20,7 @@ while ($row = $stmt->fetch()) {
 $siteName = $settings['site_name'] ?? 'AlixDeal Shopping';
 $currency = $settings['currency_symbol'] ?? '₹';
 $whatsapp = $settings['whatsapp_number'] ?? '+919876543210';
-$announcement = $settings['announcement_text'] ?? '⚡ Special Offer: Free Delivery All Over India + 50% Off With Code ALIXDEAL50!';
+$announcement = $settings['announcement_text'] ?? '⚡ Special Festive Offer: Free Delivery All Over India + 50% Off With Code ALIXDEAL50!';
 
 // Active Banners for Hero Slider
 $banners = $pdo->query("SELECT * FROM banners WHERE is_active = 1 ORDER BY sort_order ASC, id ASC")->fetchAll();
@@ -35,6 +35,16 @@ if (empty($banners)) {
             'button_link' => '#products',
             'image_url' => 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=700&q=80',
             'bg_color' => '#0F172A'
+        ],
+        [
+            'id' => 2,
+            'title' => 'Smart Electronics Extravaganza',
+            'subtitle' => 'Top Rated 3-in-1 Fast Wireless Chargers, TWS Earbuds & Smartwatches up to 70% OFF.',
+            'badge_text' => 'BESTSELLERS',
+            'button_text' => 'Explore Gadgets',
+            'button_link' => '#products',
+            'image_url' => 'https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=700&q=80',
+            'bg_color' => '#1E1B4B'
         ]
     ];
 }
@@ -66,7 +76,7 @@ $products = $stmt->fetchAll();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?php echo htmlspecialchars($settings['meta_title'] ?: ($siteName . ' - Best Deals & Online Shopping')); ?></title>
     
     <!-- SEO Meta Tags Managed from Admin -->
@@ -90,6 +100,11 @@ $products = $stmt->fetchAll();
         </script>
     <?php endif; ?>
 
+    <!-- Razorpay Checkout Script if enabled -->
+    <?php if (($settings['razorpay_enabled'] ?? '0') === '1' && !empty($settings['razorpay_key_id'])): ?>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <?php endif; ?>
+
     <!-- Custom Header Scripts -->
     <?php if (!empty($settings['header_scripts'])): ?>
         <?php echo $settings['header_scripts']; ?>
@@ -108,21 +123,28 @@ $products = $stmt->fetchAll();
             --text-sub: #64748B;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
             color: var(--text-main);
             line-height: 1.5;
         }
+
         .announcement-bar {
             background: linear-gradient(90deg, #FF5722, #FF9800);
             color: #fff;
             text-align: center;
-            padding: 8px 16px;
-            font-size: 12px;
+            padding: 8px 12px;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
+
+        /* Header Navigation */
         .header {
             background: var(--surface);
             border-bottom: 1px solid var(--border);
@@ -133,30 +155,49 @@ $products = $stmt->fetchAll();
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 12px 20px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 12px;
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        /* Mobile Hamburger Button */
+        .hamburger-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-main);
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .logo {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: -0.5px;
         }
         .search-box {
             flex: 1;
-            max-width: 480px;
+            max-width: 440px;
             position: relative;
         }
         .search-box input {
             width: 100%;
-            padding: 10px 16px 10px 40px;
+            padding: 9px 14px 9px 36px;
             border: 1px solid var(--border);
             border-radius: 999px;
             font-size: 13px;
@@ -169,56 +210,122 @@ $products = $stmt->fetchAll();
         }
         .search-icon {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-sub);
-            font-size: 14px;
+            font-size: 13px;
         }
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .btn-header {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
+            padding: 7px 12px;
             border-radius: 999px;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             border: none;
-            transition: all 0.2s;
+            white-space: nowrap;
         }
         .btn-track {
             background: #EEF2FF;
             color: var(--primary);
         }
-        .btn-track:hover {
-            background: #E0E7FF;
-        }
         .btn-cart {
             background: var(--primary);
             color: #fff;
         }
-        .btn-cart:hover {
-            background: var(--primary-hover);
+
+        /* --- MOBILE SLIDER DRAWER NAVIGATION --- */
+        .mobile-drawer-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+        }
+        .mobile-drawer-overlay.open { display: block; }
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 280px;
+            background: #fff;
+            z-index: 9999;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        }
+        .mobile-drawer.open { transform: translateX(0); }
+        .drawer-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F8FAFC;
+        }
+        .drawer-close {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text-sub);
+            cursor: pointer;
+        }
+        .drawer-body {
+            padding: 16px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .drawer-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+        .drawer-link:hover, .drawer-link.active {
+            background: #FFF1EE;
+            color: var(--primary);
+        }
+        .drawer-category-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 14px 4px;
         }
 
-        /* --- HERO SLIDER --- */
+        /* --- RESPONSIVE HERO SLIDER (100% CONTAINED ON MOBILE) --- */
         .slider-section {
             max-width: 1200px;
-            margin: 20px auto 0;
+            margin: 16px auto 0;
             padding: 0 16px;
+            width: 100%;
         }
         .slider-wrapper {
             position: relative;
-            border-radius: 20px;
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            width: 100%;
+            background: #0F172A;
         }
         .slides-container {
             display: flex;
@@ -227,27 +334,20 @@ $products = $stmt->fetchAll();
         }
         .slide {
             min-width: 100%;
+            max-width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 40px 48px;
+            padding: 32px 36px;
             color: #fff;
-            background-size: cover;
-            background-position: center;
-            min-height: 280px;
             position: relative;
-        }
-        .slide::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.6) 60%, rgba(15,23,42,0.2) 100%);
-            z-index: 1;
+            box-sizing: border-box;
         }
         .slide-content {
             position: relative;
             z-index: 2;
-            max-width: 550px;
+            max-width: 520px;
+            width: 100%;
         }
         .slide-badge {
             display: inline-block;
@@ -255,45 +355,48 @@ $products = $stmt->fetchAll();
             color: #fff;
             font-size: 11px;
             font-weight: 800;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
         }
         .slide-title {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 10px;
+            line-height: 1.25;
+            margin-bottom: 8px;
+            word-break: break-word;
         }
         .slide-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #CBD5E1;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             line-height: 1.5;
         }
         .slide-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
+            gap: 6px;
+            padding: 10px 20px;
             background: var(--primary);
             color: #fff;
             font-weight: 700;
-            font-size: 14px;
-            border-radius: 10px;
+            font-size: 13px;
+            border-radius: 8px;
             text-decoration: none;
             transition: all 0.2s;
         }
-        .slide-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .slide-btn:hover { background: var(--primary-hover); }
         .slide-img-preview {
             position: relative;
             z-index: 2;
-            max-width: 320px;
-            height: 200px;
+            width: 280px;
+            height: 180px;
             object-fit: cover;
-            border-radius: 14px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+            margin-left: 20px;
         }
         .slider-arrow {
             position: absolute;
@@ -302,31 +405,30 @@ $products = $stmt->fetchAll();
             z-index: 5;
             background: rgba(255,255,255,0.85);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             transition: all 0.2s;
         }
-        .slider-arrow:hover { background: #fff; transform: translateY(-50%) scale(1.1); }
-        .arrow-left { left: 16px; }
-        .arrow-right { right: 16px; }
+        .arrow-left { left: 12px; }
+        .arrow-right { right: 12px; }
         .slider-dots {
             position: absolute;
-            bottom: 14px;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 5;
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
         .slider-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: rgba(255,255,255,0.4);
             cursor: pointer;
@@ -334,29 +436,57 @@ $products = $stmt->fetchAll();
         }
         .slider-dot.active {
             background: var(--primary);
-            width: 24px;
+            width: 20px;
             border-radius: 999px;
+        }
+
+        /* Mobile specific fixes for Hero Slider */
+        @media (max-width: 768px) {
+            .slide {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 22px 18px 36px;
+                text-align: left;
+            }
+            .slide-title {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+            .slide-subtitle {
+                font-size: 12px;
+                margin-bottom: 14px;
+            }
+            .slide-img-preview {
+                width: 100%;
+                max-width: 100%;
+                height: 140px;
+                margin-left: 0;
+                margin-top: 14px;
+            }
+            .slider-arrow { display: none; }
+            .search-box { display: none; }
+            .btn-track { display: none; }
         }
 
         /* Flash timer */
         .flash-bar {
             max-width: 1200px;
-            margin: 20px auto 0;
+            margin: 16px auto 0;
             padding: 0 16px;
         }
         .flash-card {
             background: #FFF7ED;
             border: 1px solid #FFEDD5;
-            border-radius: 14px;
-            padding: 12px 20px;
+            border-radius: 12px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .flash-badge {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 800;
             color: #C2410C;
             display: flex;
@@ -364,32 +494,33 @@ $products = $stmt->fetchAll();
             gap: 6px;
         }
         .countdown-timer {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             color: #9A3412;
             background: #FED7AA;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 6px;
         }
 
         /* Categories pills */
         .categories-nav {
             max-width: 1200px;
-            margin: 24px auto 0;
+            margin: 18px auto 0;
             padding: 0 16px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
             scrollbar-width: none;
         }
+        .categories-nav::-webkit-scrollbar { display: none; }
         .cat-pill {
-            padding: 8px 18px;
+            padding: 7px 16px;
             border-radius: 999px;
             background: #fff;
             border: 1px solid var(--border);
             text-decoration: none;
             color: var(--text-main);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
             transition: all 0.2s;
@@ -403,18 +534,24 @@ $products = $stmt->fetchAll();
         /* Products Grid */
         .container {
             max-width: 1200px;
-            margin: 24px auto 48px;
+            margin: 20px auto 40px;
             padding: 0 16px;
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
         }
         .product-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -422,13 +559,12 @@ $products = $stmt->fetchAll();
             position: relative;
         }
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
-            border-color: #CBD5E1;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 16px -4px rgba(0,0,0,0.08);
         }
         .card-img-wrap {
             position: relative;
-            height: 180px;
+            height: 150px;
             background: #F1F5F9;
             overflow: hidden;
         }
@@ -443,94 +579,82 @@ $products = $stmt->fetchAll();
         }
         .discount-badge {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             background: var(--primary);
             color: #fff;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
         .card-body {
-            padding: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             flex: 1;
         }
         .card-cat {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-sub);
             font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .card-title {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 6px;
+            line-height: 1.35;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            height: 40px;
+            height: 35px;
         }
         .price-box {
             display: flex;
             align-items: baseline;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 6px;
+            margin-bottom: 8px;
         }
         .current-price {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--primary);
         }
         .cut-price {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-sub);
             text-decoration: line-through;
         }
-        .rating-box {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: var(--text-sub);
-            margin-bottom: 14px;
-        }
         .btn-card-buy {
             width: 100%;
-            padding: 9px 0;
+            padding: 8px 0;
             background: var(--primary);
             color: #fff;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 12px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
             margin-bottom: 6px;
         }
-        .btn-card-buy:hover { background: var(--primary-hover); }
         .btn-whatsapp {
             width: 100%;
-            padding: 7px 0;
+            padding: 6px 0;
             background: #25D366;
             color: #fff;
             font-weight: 700;
-            font-size: 12px;
+            font-size: 11px;
             border-radius: 8px;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            transition: all 0.2s;
+            gap: 4px;
         }
-        .btn-whatsapp:hover { background: #1EBE5D; }
 
         /* Cart Drawer */
         .cart-overlay {
@@ -557,19 +681,19 @@ $products = $stmt->fetchAll();
         }
         .cart-drawer.open { transform: translateX(0); }
         .cart-header {
-            padding: 16px 20px;
+            padding: 14px 18px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .cart-body {
-            padding: 20px;
+            padding: 16px;
             flex: 1;
             overflow-y: auto;
         }
         .cart-footer {
-            padding: 20px;
+            padding: 16px;
             border-top: 1px solid var(--border);
             background: #F8FAFC;
         }
@@ -596,30 +720,51 @@ $products = $stmt->fetchAll();
         .modal-card {
             background: #fff;
             border-radius: 16px;
-            max-width: 500px;
+            max-width: 460px;
             width: 100%;
             padding: 24px;
             text-align: center;
         }
 
+        /* Floating WhatsApp Chat Button */
+        .floating-wa-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            background: #25D366;
+            color: #fff;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 6px 16px rgba(37,211,102,0.4);
+            z-index: 99;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .floating-wa-btn:hover { transform: scale(1.1); }
+
         footer {
             background: #0F172A;
             color: #94A3B8;
-            padding: 40px 20px 24px;
+            padding: 36px 16px 20px;
             font-size: 13px;
         }
         .footer-wrap {
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px;
-            padding-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            padding-bottom: 24px;
             border-bottom: 1px solid #1E293B;
         }
-        .footer-wrap h4 { color: #fff; margin-bottom: 14px; font-size: 15px; }
+        .footer-wrap h4 { color: #fff; margin-bottom: 12px; font-size: 14px; }
         .footer-wrap ul { list-style: none; }
-        .footer-wrap li { margin-bottom: 8px; }
+        .footer-wrap li { margin-bottom: 6px; }
         .footer-wrap a { color: #94A3B8; text-decoration: none; }
         .footer-wrap a:hover { color: #fff; }
     </style>
@@ -636,18 +781,23 @@ $products = $stmt->fetchAll();
 <!-- Header Navigation -->
 <header class="header">
     <div class="nav-container">
-        <a href="index.php" class="logo">
-            <span>🔥</span>
-            <span><?php echo htmlspecialchars($siteName); ?></span>
-        </a>
+        <div class="nav-left">
+            <!-- 3-line Mobile Hamburger Button -->
+            <button class="hamburger-btn" onclick="toggleMobileDrawer()" title="Menu">☰</button>
 
-        <!-- Live Search -->
+            <a href="index.php" class="logo">
+                <span>🔥</span>
+                <span><?php echo htmlspecialchars($siteName); ?></span>
+            </a>
+        </div>
+
+        <!-- Search Bar -->
         <form method="GET" action="index.php" class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search wireless chargers, earbuds, shirts...">
+            <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search gadgets, earbuds, fashion...">
         </form>
 
-        <!-- Header Actions: Replaced Wishlist with Track Order! -->
+        <!-- Header Actions: Track Order & Cart -->
         <div class="header-actions">
             <a href="track_order.php" class="btn-header btn-track">
                 <span>📦</span>
@@ -662,7 +812,42 @@ $products = $stmt->fetchAll();
     </div>
 </header>
 
-<!-- Hero Banners Carousel Slider -->
+<!-- Mobile Navigation Slide Drawer -->
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" onclick="toggleMobileDrawer()"></div>
+<aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+        <div class="logo">
+            <span>🔥</span>
+            <span><?php echo htmlspecialchars($siteName); ?></span>
+        </div>
+        <button class="drawer-close" onclick="toggleMobileDrawer()">✕</button>
+    </div>
+    <div class="drawer-body">
+        <form method="GET" action="index.php" style="margin-bottom: 14px;">
+            <input type="text" name="q" placeholder="🔍 Search products..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+        </form>
+
+        <a href="index.php" class="drawer-link <?php echo $catId === 0 ? 'active' : ''; ?>">🔥 All Hot Deals</a>
+        <a href="track_order.php" class="drawer-link">📦 Track My Orders</a>
+
+        <div class="drawer-category-title">Categories</div>
+        <?php foreach ($categories as $cat): ?>
+            <a href="index.php?cat=<?php echo $cat['id']; ?>" class="drawer-link <?php echo $catId === $cat['id'] ? 'active' : ''; ?>">
+                📁 <?php echo htmlspecialchars($cat['name']); ?>
+            </a>
+        <?php endforeach; ?>
+
+        <div class="drawer-category-title">Help & Admin</div>
+        <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $whatsapp); ?>" target="_blank" class="drawer-link" style="color: #25D366;">
+            💬 WhatsApp Support
+        </a>
+        <a href="admin/login.php" target="_blank" class="drawer-link">
+            ⚙️ Admin Panel
+        </a>
+    </div>
+</aside>
+
+<!-- Hero Banners Carousel Slider (100% Contained On Mobile) -->
 <section class="slider-section">
     <div class="slider-wrapper">
         <div class="slides-container" id="heroSlides">
@@ -677,7 +862,7 @@ $products = $stmt->fetchAll();
                         </a>
                     </div>
                     <?php if (!empty($b['image_url'])): ?>
-                        <img src="<?php echo htmlspecialchars($b['image_url']); ?>" alt="Banner Image" class="slide-img-preview">
+                        <img src="<?php echo htmlspecialchars($b['image_url']); ?>" alt="Banner Preview" class="slide-img-preview" onerror="this.style.display='none'">
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -701,10 +886,10 @@ $products = $stmt->fetchAll();
     <div class="flash-card">
         <div class="flash-badge">
             <span>⚡ TODAY'S DEALS OF THE DAY</span>
-            <span style="font-weight: 500; font-size: 12px; color: #7C2D12;">• Instant Delivery & Cash on Delivery Available</span>
+            <span style="font-weight: 500; font-size: 11px; color: #7C2D12;">• Doorstep Delivery Across India</span>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 12px; color: #7C2D12; font-weight: 600;">Sale Ends In:</span>
+            <span style="font-size: 11px; color: #7C2D12; font-weight: 600;">Ends In:</span>
             <div class="countdown-timer" id="dealTimer">08h : 35m : 12s</div>
         </div>
     </div>
@@ -722,19 +907,19 @@ $products = $stmt->fetchAll();
 
 <!-- Products Grid Section -->
 <main class="container" id="products">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="font-size: 20px; font-weight: 800;">
-            <?php echo !empty($search) ? 'Search Results for: "' . htmlspecialchars($search) . '"' : ($catId > 0 ? 'Category Deals' : 'Trending Hot Deals'); ?>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h2 style="font-size: 18px; font-weight: 800;">
+            <?php echo !empty($search) ? 'Search: "' . htmlspecialchars($search) . '"' : ($catId > 0 ? 'Category Deals' : 'Trending Hot Deals'); ?>
         </h2>
-        <span style="font-size: 13px; color: var(--text-sub);"><?php echo count($products); ?> Products Available</span>
+        <span style="font-size: 12px; color: var(--text-sub);"><?php echo count($products); ?> Items</span>
     </div>
 
     <?php if (empty($products)): ?>
-        <div style="text-align: center; padding: 60px 20px; background: #fff; border-radius: 16px; border: 1px solid var(--border);">
-            <div style="font-size: 48px; margin-bottom: 12px;">🔍</div>
-            <h3 style="font-size: 18px; font-weight: 700;">No Products Found</h3>
-            <p style="color: var(--text-sub); font-size: 14px; margin-top: 6px;">Try clearing search filters or browse our other categories.</p>
-            <a href="index.php" class="slide-btn" style="margin-top: 18px;">View All Products</a>
+        <div style="text-align: center; padding: 48px 16px; background: #fff; border-radius: 14px; border: 1px solid var(--border);">
+            <div style="font-size: 40px; margin-bottom: 10px;">🔍</div>
+            <h3 style="font-size: 16px; font-weight: 700;">No Products Found</h3>
+            <p style="color: var(--text-sub); font-size: 13px; margin-top: 4px;">Try searching for another gadget or view all deals.</p>
+            <a href="index.php" class="slide-btn" style="margin-top: 14px;">View All Products</a>
         </div>
     <?php else: ?>
         <div class="product-grid">
@@ -766,11 +951,6 @@ $products = $stmt->fetchAll();
                             <?php endif; ?>
                         </div>
 
-                        <div class="rating-box">
-                            <span style="color: #F59E0B;">⭐ <?php echo $p['rating']; ?></span>
-                            <span>(<?php echo $p['reviews_count']; ?> reviews)</span>
-                        </div>
-
                         <button class="btn-card-buy" onclick="addToCart(<?php echo htmlspecialchars(json_encode($p)); ?>)">
                             ⚡ Buy / Add to Cart
                         </button>
@@ -785,11 +965,11 @@ $products = $stmt->fetchAll();
     <?php endif; ?>
 </main>
 
-<!-- Slide-Out Cart & Instant Checkout Drawer -->
+<!-- Slide-Out Cart & Multi-Gateway Checkout Drawer -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCartDrawer()"></div>
 <div class="cart-drawer" id="cartDrawer">
     <div class="cart-header">
-        <h3 style="font-size: 17px; font-weight: 800;">🛍️ Your Shopping Cart</h3>
+        <h3 style="font-size: 16px; font-weight: 800;">🛍️ Your Shopping Cart</h3>
         <button class="close-drawer" onclick="closeCartDrawer()">✕</button>
     </div>
 
@@ -798,56 +978,87 @@ $products = $stmt->fetchAll();
     </div>
 
     <div class="cart-footer">
-        <!-- Coupon input -->
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-            <input type="text" id="couponInput" placeholder="Promo Code (ALIXDEAL50)" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; text-transform: uppercase;">
-            <button onclick="applyCoupon()" style="padding: 8px 14px; background: #0F172A; color: #fff; font-weight: 700; font-size: 12px; border-radius: 8px; border: none; cursor: pointer;">Apply</button>
+        <!-- Promo Coupon -->
+        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" id="couponInput" placeholder="Promo Code (ALIXDEAL50)" style="flex: 1; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; text-transform: uppercase;">
+            <button onclick="applyCoupon()" style="padding: 7px 12px; background: #0F172A; color: #fff; font-weight: 700; font-size: 12px; border-radius: 8px; border: none; cursor: pointer;">Apply</button>
         </div>
-        <div id="couponMsg" style="font-size: 11px; margin-bottom: 10px;"></div>
+        <div id="couponMsg" style="font-size: 11px; margin-bottom: 8px;"></div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-sub); margin-bottom: 4px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 4px;">
             <span>Subtotal:</span>
             <span id="cartSubtotal"><?php echo $currency; ?>0.00</span>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 13px; color: #10B981; margin-bottom: 4px;" id="discountRow">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #10B981; margin-bottom: 4px;" id="discountRow">
             <span>Coupon Discount:</span>
             <span id="cartDiscount">-<?php echo $currency; ?>0.00</span>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--text-sub); margin-bottom: 8px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 6px;">
             <span>Delivery:</span>
             <span style="color: #10B981; font-weight: 700;">FREE DELIVERY</span>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; border-top: 1px dashed var(--border); padding-top: 8px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; border-top: 1px dashed var(--border); padding-top: 8px; margin-bottom: 12px;">
             <span>Total Payable:</span>
             <span style="color: var(--primary);" id="cartTotal"><?php echo $currency; ?>0.00</span>
         </div>
 
-        <button onclick="showCheckoutFields()" id="btnProceedCheckout" style="width: 100%; padding: 12px 0; background: var(--primary); color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 10px; cursor: pointer;">
+        <button onclick="showCheckoutFields()" id="btnProceedCheckout" style="width: 100%; padding: 11px 0; background: var(--primary); color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 8px; cursor: pointer;">
             Proceed to Checkout →
         </button>
 
-        <!-- Checkout Form (Hidden until clicked) -->
-        <div id="checkoutFormBlock" style="display: none; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px;">
-            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px;">Delivery & Contact Details</h4>
-            <input type="text" id="custName" placeholder="Full Name *" style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
-            <input type="tel" id="custPhone" placeholder="10-digit Mobile Number *" style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
-            <textarea id="custAddress" placeholder="Complete Street Address, Landmark *" rows="2" style="width: 100%; padding: 8px 12px; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: inherit;"></textarea>
-            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                <input type="text" id="custCity" placeholder="City *" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
-                <input type="text" id="custPincode" placeholder="PIN Code *" style="width: 110px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;">
+        <!-- Checkout Form Block -->
+        <div id="checkoutFormBlock" style="display: none; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px;">
+            <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 8px;">Delivery Details</h4>
+            <input type="text" id="custName" placeholder="Full Name *" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
+            <input type="tel" id="custPhone" placeholder="10-digit Mobile Number *" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
+            <textarea id="custAddress" placeholder="Full Address, Landmark *" rows="2" style="width: 100%; padding: 7px 10px; margin-bottom: 6px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: inherit;"></textarea>
+            <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                <input type="text" id="custCity" placeholder="City *" style="flex: 1; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
+                <input type="text" id="custPincode" placeholder="PIN Code *" style="width: 100px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px;">
             </div>
 
-            <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Select Payment Mode</h4>
-            <div style="display: flex; gap: 10px; margin-bottom: 14px;">
-                <label style="font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                    <input type="radio" name="payMethod" value="Cash On Delivery" checked> Cash on Delivery (COD)
-                </label>
-                <label style="font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                    <input type="radio" name="payMethod" value="Instant UPI"> Instant UPI
-                </label>
+            <!-- Indian Payment Gateways Selector -->
+            <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 6px;">Select Payment Mode:</h4>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; background: #fff; padding: 8px; border: 1px solid var(--border); border-radius: 8px;">
+                <?php if (($settings['cod_enabled'] ?? '1') === '1'): ?>
+                    <label style="font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="payMethod" value="Cash On Delivery" checked onchange="togglePaymentQR(false)">
+                        💵 Cash on Delivery (Pay at Doorstep)
+                    </label>
+                <?php endif; ?>
+
+                <?php if (($settings['upi_enabled'] ?? '1') === '1'): ?>
+                    <label style="font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="payMethod" value="Direct UPI" onchange="togglePaymentQR(true, 'upi')">
+                        ⚡ Direct UPI (GPay, PhonePe, Paytm, BHIM)
+                    </label>
+                <?php endif; ?>
+
+                <?php if (($settings['bharatpe_enabled'] ?? '1') === '1'): ?>
+                    <label style="font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="payMethod" value="BharatPe QR" onchange="togglePaymentQR(true, 'bharatpe')">
+                        🇮🇳 BharatPe Merchant QR
+                    </label>
+                <?php endif; ?>
+
+                <?php if (($settings['razorpay_enabled'] ?? '0') === '1'): ?>
+                    <label style="font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="radio" name="payMethod" value="Razorpay" onchange="togglePaymentQR(false)">
+                        💳 Razorpay (Credit/Debit Card, NetBanking)
+                    </label>
+                <?php endif; ?>
             </div>
 
-            <button onclick="submitOrder()" style="width: 100%; padding: 12px 0; background: #10B981; color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 10px; cursor: pointer;">
+            <!-- Dynamic QR Payment View -->
+            <div id="qrPaymentBox" style="display: none; background: #FEF3C7; border: 1px solid #FDE68A; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+                <div style="font-size: 12px; font-weight: 700; color: #92400E; margin-bottom: 6px;" id="qrBoxTitle">Scan & Pay via any UPI App</div>
+                <img id="dynamicQRImg" src="" style="width: 120px; height: 120px; margin: 0 auto; display: block; border-radius: 6px; background: #fff; padding: 4px;">
+                <div style="margin-top: 6px;">
+                    <a id="upiDeepLinkBtn" href="#" class="btn btn-sm" style="background: #0284C7; font-size: 11px;">🚀 Pay via UPI App (PhonePe / GPay)</a>
+                </div>
+            </div>
+
+            <button onclick="submitOrder()" style="width: 100%; padding: 11px 0; background: #10B981; color: #fff; font-weight: 800; font-size: 14px; border: none; border-radius: 8px; cursor: pointer;">
                 ✅ Confirm & Place Order Now
             </button>
         </div>
@@ -857,33 +1068,41 @@ $products = $stmt->fetchAll();
 <!-- Order Success Modal -->
 <div class="modal" id="successModal">
     <div class="modal-card">
-        <div style="font-size: 54px; margin-bottom: 10px;">🎉</div>
-        <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">Order Placed Successfully!</h2>
-        <p style="color: var(--text-sub); font-size: 14px; margin-bottom: 16px;">Thank you! Your order has been placed and our team is preparing it for dispatch.</p>
+        <div style="font-size: 48px; margin-bottom: 8px;">🎉</div>
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Order Placed Successfully!</h2>
+        <p style="color: var(--text-sub); font-size: 13px; margin-bottom: 14px;">Your order has been recorded. Our team will verify and dispatch it promptly.</p>
 
-        <div style="background: #F8FAFC; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-            <div style="font-size: 12px; color: var(--text-sub);">YOUR ORDER ID:</div>
-            <div style="font-size: 20px; font-weight: 800; color: var(--primary);" id="confirmedOrderNum">ORD-XXXXXX</div>
+        <div style="background: #F8FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+            <div style="font-size: 11px; color: var(--text-sub);">YOUR ORDER ID:</div>
+            <div style="font-size: 18px; font-weight: 800; color: var(--primary);" id="confirmedOrderNum">ORD-XXXXXX</div>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <a href="track_order.php" class="slide-btn" style="flex: 1; text-align: center; justify-content: center;">Track Order Status</a>
-            <button onclick="closeSuccessModal()" style="padding: 12px 20px; background: #F1F5F9; color: var(--text-main); font-weight: 700; border-radius: 10px; border: none; cursor: pointer;">Continue Shopping</button>
+        <div style="display: flex; gap: 8px;">
+            <a href="track_order.php" class="slide-btn" style="flex: 1; text-align: center; justify-content: center; font-size: 12px;">Track Order Status</a>
+            <button onclick="closeSuccessModal()" style="padding: 10px 16px; background: #F1F5F9; color: var(--text-main); font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 12px;">Continue Shopping</button>
         </div>
     </div>
 </div>
 
+<!-- Floating WhatsApp Widget -->
+<?php if (($settings['whatsapp_floating_widget'] ?? '1') === '1'): ?>
+    <a href="https://wa.me/<?php echo preg_replace('/[^0-9]/', '', $whatsapp); ?>?text=<?php echo urlencode('Hello! I have a question about AlixDeal products.'); ?>" target="_blank" class="floating-wa-btn" title="Chat on WhatsApp">
+        💬
+    </a>
+<?php endif; ?>
+
 <footer>
     <div class="footer-wrap">
         <div>
-            <div class="logo" style="margin-bottom: 12px; color: #fff;">🔥 <?php echo htmlspecialchars($siteName); ?></div>
-            <p style="line-height: 1.6;"><?php echo htmlspecialchars($settings['site_description'] ?? 'Exclusive daily deals on top trending products across India.'); ?></p>
+            <div class="logo" style="margin-bottom: 10px; color: #fff;">🔥 <?php echo htmlspecialchars($siteName); ?></div>
+            <p style="line-height: 1.5; font-size: 12px;"><?php echo htmlspecialchars($settings['site_description'] ?? 'India\'s favorite daily deals store for gadgets and essentials.'); ?></p>
         </div>
         <div>
             <h4>Quick Links</h4>
             <ul>
                 <li><a href="index.php">Browse Hot Deals</a></li>
-                <li><a href="track_order.php">Track My Order</a></li>
+                <li><a href="track_order.php">Track My Orders</a></li>
+                <li><a href="sitemap.php" target="_blank">Sitemap XML</a></li>
                 <li><a href="admin/login.php" target="_blank">Admin Control Panel</a></li>
             </ul>
         </div>
@@ -893,11 +1112,11 @@ $products = $stmt->fetchAll();
                 <li>Email: <?php echo htmlspecialchars($settings['contact_email'] ?? 'support@alixdeal.shop'); ?></li>
                 <li>Phone: <?php echo htmlspecialchars($settings['contact_phone'] ?? '+91 98765 43210'); ?></li>
                 <li>WhatsApp: <?php echo htmlspecialchars($whatsapp); ?></li>
-                <li>Location: <?php echo htmlspecialchars($settings['address'] ?? 'India'); ?></li>
+                <li>Location: <?php echo htmlspecialchars($settings['address'] ?? 'Mumbai, India'); ?></li>
             </ul>
         </div>
     </div>
-    <div style="max-width: 1200px; margin: 20px auto 0; text-align: center; font-size: 12px;">
+    <div style="max-width: 1200px; margin: 16px auto 0; text-align: center; font-size: 11px;">
         © <?php echo date('Y'); ?> <?php echo htmlspecialchars($siteName); ?>. All rights reserved.
     </div>
 </footer>
@@ -908,10 +1127,23 @@ $products = $stmt->fetchAll();
 <?php endif; ?>
 
 <script>
-    // Currency
     const currency = '<?php echo $currency; ?>';
+    const upiId = '<?php echo htmlspecialchars($settings['upi_id'] ?? 'alixdeal@upi'); ?>';
+    const upiName = '<?php echo htmlspecialchars($settings['upi_name'] ?? 'AlixDeal'); ?>';
+    const bharatpeId = '<?php echo htmlspecialchars($settings['bharatpe_merchant_id'] ?? ''); ?>';
+    const razorpayKey = '<?php echo htmlspecialchars($settings['razorpay_key_id'] ?? ''); ?>';
 
-    // Hero Slider JS
+    // Toggle Mobile Drawer Menu
+    function toggleMobileDrawer() {
+        const drawer = document.getElementById('mobileDrawer');
+        const overlay = document.getElementById('mobileDrawerOverlay');
+        if (drawer && overlay) {
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+    }
+
+    // Hero Slider JS (Auto slide & responsive)
     let currentSlide = 0;
     const slidesCount = <?php echo count($banners); ?>;
     const slidesContainer = document.getElementById('heroSlides');
@@ -940,7 +1172,6 @@ $products = $stmt->fetchAll();
         updateSlider();
     }
 
-    // Auto rotate slides every 4.5 seconds
     if (slidesCount > 1) {
         setInterval(nextSlide, 4500);
     }
@@ -1019,10 +1250,10 @@ $products = $stmt->fetchAll();
 
         if (cart.length === 0) {
             listEl.innerHTML = `
-                <div style="text-align: center; padding: 48px 16px; color: var(--text-sub);">
-                    <div style="font-size: 40px; margin-bottom: 8px;">🛒</div>
-                    <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main);">Your Cart is Empty</h4>
-                    <p style="font-size: 13px; margin-top: 4px;">Explore our daily deals and tap "Buy / Add to Cart" on any product.</p>
+                <div style="text-align: center; padding: 40px 12px; color: var(--text-sub);">
+                    <div style="font-size: 36px; margin-bottom: 6px;">🛒</div>
+                    <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main);">Your Cart is Empty</h4>
+                    <p style="font-size: 12px; margin-top: 4px;">Tap "⚡ Buy / Add to Cart" on any product to start.</p>
                 </div>
             `;
             document.getElementById('cartSubtotal').textContent = `${currency}0.00`;
@@ -1037,17 +1268,17 @@ $products = $stmt->fetchAll();
             const lineTotal = item.price * item.quantity;
             subtotal += lineTotal;
             html += `
-                <div style="display: flex; gap: 12px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-                    <img src="${item.image || 'https://via.placeholder.com/60'}" style="width: 58px; height: 58px; border-radius: 8px; object-fit: cover;">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border);">
+                    <img src="${item.image || 'https://via.placeholder.com/60'}" style="width: 52px; height: 52px; border-radius: 8px; object-fit: cover;">
                     <div style="flex: 1;">
-                        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 2px;">${item.name}</h4>
+                        <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 2px;">${item.name}</h4>
                         <div style="font-size: 11px; color: var(--text-sub);">${item.color} • ${item.size}</div>
-                        <div style="font-size: 13px; font-weight: 800; color: var(--primary); margin-top: 4px;">${currency}${item.price.toFixed(2)}</div>
+                        <div style="font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 2px;">${currency}${item.price.toFixed(2)}</div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <button onclick="updateQty('${item.id}', -1)" style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">-</button>
-                        <span style="font-size: 13px; font-weight: 700;">${item.quantity}</span>
-                        <button onclick="updateQty('${item.id}', 1)" style="width: 24px; height: 24px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">+</button>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <button onclick="updateQty('${item.id}', -1)" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">-</button>
+                        <span style="font-size: 12px; font-weight: 700;">${item.quantity}</span>
+                        <button onclick="updateQty('${item.id}', 1)" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">+</button>
                     </div>
                 </div>
             `;
@@ -1060,6 +1291,9 @@ $products = $stmt->fetchAll();
         document.getElementById('cartSubtotal').textContent = `${currency}${subtotal.toFixed(2)}`;
         document.getElementById('cartDiscount').textContent = `-${currency}${discountAmount.toFixed(2)}`;
         document.getElementById('cartTotal').textContent = `${currency}${total.toFixed(2)}`;
+
+        // Update dynamic QR link
+        updateDynamicPaymentQR(total);
     }
 
     function applyCoupon() {
@@ -1087,6 +1321,35 @@ $products = $stmt->fetchAll();
         }
         document.getElementById('checkoutFormBlock').style.display = 'block';
         document.getElementById('btnProceedCheckout').style.display = 'none';
+    }
+
+    function togglePaymentQR(show, type = 'upi') {
+        const box = document.getElementById('qrPaymentBox');
+        if (!box) return;
+        if (!show) {
+            box.style.display = 'none';
+            return;
+        }
+        box.style.display = 'block';
+        const totalItems = cart.reduce((acc, it) => acc + (it.price * it.quantity), 0);
+        const total = totalItems - (totalItems * (discountPercent / 100));
+        updateDynamicPaymentQR(total, type);
+    }
+
+    function updateDynamicPaymentQR(amount, type = 'upi') {
+        const qrImg = document.getElementById('dynamicQRImg');
+        const deepBtn = document.getElementById('upiDeepLinkBtn');
+        const titleEl = document.getElementById('qrBoxTitle');
+        if (!qrImg || !deepBtn) return;
+
+        const targetId = type === 'bharatpe' && bharatpeId ? bharatpeId : upiId;
+        const upiString = `upi://pay?pa=${encodeURIComponent(targetId)}&pn=${encodeURIComponent(upiName)}&am=${amount.toFixed(2)}&cu=INR&tn=Order_${Date.now()}`;
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(upiString)}`;
+        deepBtn.href = upiString;
+
+        if (titleEl) {
+            titleEl.textContent = type === 'bharatpe' ? `🇮🇳 BharatPe Merchant QR: ₹${amount.toFixed(2)}` : `⚡ Scan & Pay ₹${amount.toFixed(2)} via any UPI App`;
+        }
     }
 
     async function submitOrder() {

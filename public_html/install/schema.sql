@@ -115,6 +115,18 @@ CREATE TABLE IF NOT EXISTS `inquiries` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Product Customer Reviews Table
+CREATE TABLE IF NOT EXISTS `reviews` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `product_id` INT NOT NULL,
+  `customer_name` VARCHAR(150) NOT NULL,
+  `customer_phone` VARCHAR(30),
+  `rating` INT NOT NULL DEFAULT 5,
+  `comment` TEXT NOT NULL,
+  `is_approved` TINYINT(1) DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Seed Categories
 INSERT IGNORE INTO `categories` (`id`, `name`, `slug`, `icon`) VALUES
 (1, 'Smart Electronics', 'smart-electronics', 'bolt'),
@@ -153,7 +165,24 @@ INSERT IGNORE INTO `settings` (`key_name`, `value`) VALUES
 ('footer_scripts', ''),
 ('cod_enabled', '1'),
 ('upi_enabled', '1'),
-('upi_id', 'alixdeal@upi');
+('upi_id', 'alixdeal@upi'),
+('upi_name', 'AlixDeal Shopping'),
+('bharatpe_enabled', '1'),
+('bharatpe_merchant_id', 'BHARATPE987654'),
+('bharatpe_qr_image', ''),
+('razorpay_enabled', '0'),
+('razorpay_key_id', 'rzp_test_YourKeyHere'),
+('razorpay_key_secret', 'YourSecretKeyHere'),
+('gst_percentage', '0'),
+('gst_number', ''),
+('free_shipping_min_order', '0'),
+('flat_shipping_rate', '0'),
+('whatsapp_floating_widget', '1'),
+('whatsapp_welcome_msg', 'Hello! Need help with an order or product? Chat with us!'),
+('social_instagram', 'https://instagram.com'),
+('social_facebook', 'https://facebook.com'),
+('social_youtube', 'https://youtube.com'),
+('social_telegram', 'https://t.me');
 
 -- Seed Hero Banners (Sliders)
 INSERT IGNORE INTO `banners` (`id`, `title`, `subtitle`, `badge_text`, `button_text`, `button_link`, `image_url`, `bg_color`, `sort_order`, `is_active`) VALUES

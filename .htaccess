@@ -1,4 +1,11 @@
-DirectoryIndex index.php index.html
+Options -Indexes +FollowSymLinks
+RewriteEngine On
 
-# Prevent direct listing
-Options -Indexes
+# 1. Strip index.php from URL
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
+RewriteRule ^ %1/ [R=301,L]
+
+# 2. If public_html directory is present, rewrite clean requests through public_html
+RewriteCond %{REQUEST_URI} !^/public_html/
+RewriteCond %{DOCUMENT_ROOT}/public_html -d
+RewriteRule ^(.*)$ public_html/$1 [L]
