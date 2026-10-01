@@ -1,0 +1,10 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/dexocoolwork/crm.dexocoolwork.com/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R public_html/* $DEPLOYPATH
+    - /bin/cp -R public_html/.htaccess $DEPLOYPATH 2>/dev/null || true
+    - /bin/chmod -R 755 $DEPLOYPATH/uploads 2>/dev/null || true
+    - /bin/cp -R public_html/* /home/dexocoolwork/public_html/crm/ 2>/dev/null || true
+    - /bin/cp -R public_html/.htaccess /home/dexocoolwork/public_html/crm/ 2>/dev/null || true
