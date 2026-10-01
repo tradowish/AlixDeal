@@ -1,13 +1,20 @@
-Options -Indexes +FollowSymLinks
+Options -Indexes +MultiViews +FollowSymLinks
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Prevent duplicate public_html paths
-    RewriteCond %{THE_REQUEST} /public_html/public_html/ [NC]
-    RewriteRule ^public_html/(.*)$ $1 [R=301,L]
+    # 1. Clean any duplicate public_html from old browser cache
+    RewriteCond %{THE_REQUEST} /public_html/public_html/([^\s?]*) [NC]
+    RewriteRule ^ /%1 [R=302,L]
 
-    # If accessed directly at domain root, route to public_html only if not already inside public_html
-    RewriteCond %{REQUEST_URI} !^/public_html/ [NC]
+    # 2. Strip /public_html/ from external browser URL bar completely
+    RewriteCond %{THE_REQUEST} \s/public_html/([^\s?]*) [NC]
+    RewriteRule ^ /%1 [R=301,L]
+
+    # 3. Clean direct mapping for admin login
+    RewriteRule ^admin/login/?$ public_html/admin/login.php [L]
+
+    # 4. Internally route all clean requests to public_html folder
     RewriteCond %{DOCUMENT_ROOT}/public_html -d
+    RewriteCond %{REQUEST_URI} !^/public_html/ [NC]
     RewriteRule ^(.*)$ public_html/$1 [L]
 </IfModule>

@@ -1,5 +1,9 @@
-# Admin direct routing - disable mod_rewrite in admin to prevent duplicate path redirects
 <IfModule mod_rewrite.c>
-    RewriteEngine Off
+    RewriteEngine On
+
+    # Route clean URLs like /admin/login to /admin/login.php internally
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
 </IfModule>
-Options -Indexes
+Options -Indexes +MultiViews

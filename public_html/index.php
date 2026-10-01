@@ -255,74 +255,146 @@ $products = $stmt->fetchAll();
             color: #fff;
         }
 
-        /* --- MOBILE SLIDER DRAWER NAVIGATION --- */
+        /* --- PREMIUM MOBILE SLIDER DRAWER NAVIGATION --- */
         .mobile-drawer-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
             z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .mobile-drawer-overlay.open { display: block; }
+        .mobile-drawer-overlay.open {
+            display: block;
+            opacity: 1;
+        }
         .mobile-drawer {
             position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
-            width: 280px;
-            background: #fff;
+            width: 310px;
+            max-width: 85vw;
+            background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+            color: #fff;
             z-index: 9999;
             transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            box-shadow: 10px 0 35px rgba(0, 0, 0, 0.4);
         }
         .mobile-drawer.open { transform: translateX(0); }
         .drawer-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #F8FAFC;
+            background: rgba(15, 23, 42, 0.85);
+        }
+        .drawer-header .logo {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 800;
         }
         .drawer-close {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            font-size: 22px;
-            color: var(--text-sub);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #94A3B8;
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        .drawer-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
         }
         .drawer-body {
-            padding: 16px 12px;
+            padding: 18px 14px;
             flex: 1;
             overflow-y: auto;
+        }
+        .drawer-user-card {
+            background: linear-gradient(135deg, rgba(255, 87, 34, 0.15), rgba(255, 152, 0, 0.15));
+            border: 1px solid rgba(255, 87, 34, 0.3);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 18px;
+        }
+        .drawer-user-card .badge-auth {
+            font-size: 10px;
+            font-weight: 800;
+            color: #FF7043;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .drawer-user-card .user-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #fff;
+            margin-top: 2px;
+        }
+        .drawer-user-card .user-wallet {
+            font-size: 12px;
+            color: #34D399;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+        .drawer-auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 6px 16px rgba(255, 87, 34, 0.35);
+            transition: all 0.2s;
+            margin-bottom: 18px;
+        }
+        .drawer-auth-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(255, 87, 34, 0.45);
         }
         .drawer-link {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 11px 14px;
-            color: var(--text-main);
+            color: #CBD5E1;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             border-radius: 10px;
             margin-bottom: 4px;
             transition: all 0.2s;
         }
         .drawer-link:hover, .drawer-link.active {
-            background: #FFF1EE;
-            color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            color: #FF7043;
         }
         .drawer-category-title {
             font-size: 11px;
-            font-weight: 700;
-            color: var(--text-sub);
+            font-weight: 800;
+            color: #64748B;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 14px 4px;
+            letter-spacing: 0.6px;
+            padding: 14px 14px 6px;
         }
 
         /* --- RESPONSIVE HERO SLIDER (100% CONTAINED ON MOBILE) --- */
@@ -668,53 +740,111 @@ $products = $stmt->fetchAll();
             gap: 4px;
         }
 
-        /* Cart Drawer */
+        /* --- PREMIUM CART & CHECKOUT DRAWER --- */
         .cart-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .cart-overlay.open { display: block; }
+        .cart-overlay.open { display: block; opacity: 1; }
         .cart-drawer {
             position: fixed;
             right: 0;
             top: 0;
             bottom: 0;
             width: 100%;
-            max-width: 440px;
-            background: #fff;
+            max-width: 450px;
+            background: #FFFFFF;
             z-index: 1001;
             transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
+            box-shadow: -10px 0 35px rgba(0, 0, 0, 0.25);
         }
         .cart-drawer.open { transform: translateX(0); }
         .cart-header {
-            padding: 14px 18px;
+            padding: 16px 20px;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #FFFFFF;
+        }
+        .cart-header h3 {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-free-shipping-bar {
+            background: linear-gradient(90deg, #ECFDF5 0%, #D1FAE5 100%);
+            border-bottom: 1px solid #A7F3D0;
+            padding: 9px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #065F46;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .cart-body {
             padding: 16px;
             flex: 1;
             overflow-y: auto;
-        }
-        .cart-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border);
             background: #F8FAFC;
         }
+        .cart-item-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            transition: all 0.2s;
+        }
+        .cart-item-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .cart-item-card img {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+        }
+        .cart-footer {
+            padding: 18px 20px;
+            border-top: 1px solid var(--border);
+            background: #FFFFFF;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
+        }
         .close-drawer {
-            background: none;
+            background: #F1F5F9;
             border: none;
-            font-size: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
             color: var(--text-sub);
+            transition: all 0.2s;
+        }
+        .close-drawer:hover {
+            background: #FEE2E2;
+            color: #DC2626;
         }
 
         /* Order Success Modal */
@@ -809,26 +939,14 @@ $products = $stmt->fetchAll();
             <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search gadgets, earbuds, fashion...">
         </form>
 
-        <!-- Header Actions: Track Order, User Sign-In / Account, Cart -->
+        <!-- Header Actions: Track Order & Cart -->
         <div class="header-actions">
             <a href="track_order.php" class="btn-header btn-track">
                 <span>📦</span>
                 <span>Track Order</span>
             </a>
 
-            <?php if ($currentUser): ?>
-                <a href="my_account.php" class="btn-header btn-user" style="background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0;">
-                    <span>👋</span>
-                    <span><?php echo htmlspecialchars(explode(' ', $currentUser['name'])[0]); ?> (₹<?php echo number_format($currentUser['wallet_balance'], 0); ?>)</span>
-                </a>
-            <?php else: ?>
-                <button onclick="openAuthModal('login')" class="btn-header btn-user" style="background: #F8FAFC; color: var(--text-main); border: 1px solid var(--border);">
-                    <span>👤</span>
-                    <span>Sign In</span>
-                </button>
-            <?php endif; ?>
-
-            <button onclick="openCartDrawer()" class="btn-header btn-cart">
+            <button onclick="openCartDrawer()" class="btn-header btn-cart" id="headerCartBtn">
                 <span>🛒</span>
                 <span>Cart (<span id="cart-badge-count">0</span>)</span>
             </button>
@@ -844,23 +962,29 @@ $products = $stmt->fetchAll();
             <span>🔥</span>
             <span><?php echo htmlspecialchars($siteName); ?></span>
         </div>
-        <button class="drawer-close" onclick="toggleMobileDrawer()">✕</button>
+        <button class="drawer-close" onclick="toggleMobileDrawer()" aria-label="Close menu">✕</button>
     </div>
     <div class="drawer-body">
         <?php if ($currentUser): ?>
-            <div style="background: #FFF1EE; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                <div style="font-size: 11px; font-weight: 700; color: var(--primary);">LOGGED IN CUSTOMER</div>
-                <strong style="font-size: 14px;"><?php echo htmlspecialchars($currentUser['name']); ?></strong>
-                <div style="font-size: 12px; color: #059669; font-weight: 700; margin-top: 2px;">Wallet: ₹<?php echo number_format($currentUser['wallet_balance'], 2); ?></div>
-                <div style="display: flex; gap: 8px; margin-top: 8px;">
-                    <a href="my_account.php" class="btn btn-sm" style="font-size: 11px; padding: 4px 10px;">My Account</a>
-                    <button onclick="handleLogout()" class="btn btn-sm btn-danger" style="font-size: 11px; padding: 4px 10px;">Sign Out</button>
+            <div class="drawer-user-card">
+                <div class="badge-auth">🌟 Verified Customer</div>
+                <div class="user-name">👋 <?php echo htmlspecialchars($currentUser['name']); ?></div>
+                <div class="user-wallet">💰 Wallet Balance: ₹<?php echo number_format($currentUser['wallet_balance'], 2); ?></div>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <a href="my_account.php" style="font-size: 11px; padding: 6px 12px; background: #FF5722; color:#fff; border-radius:8px; text-decoration:none; font-weight:700;">💳 My Account & Orders</a>
+                    <button onclick="handleLogout()" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">Sign Out</button>
                 </div>
             </div>
         <?php else: ?>
-            <button onclick="toggleMobileDrawer(); openAuthModal('login');" class="btn" style="width: 100%; margin-bottom: 12px; justify-content: center; font-size: 13px;">
-                👤 Sign In / Register (+₹50 Bonus)
-            </button>
+            <div class="drawer-user-card">
+                <div class="badge-auth">🎁 Exclusive New User Offer</div>
+                <div class="user-name" style="font-size: 14px;">Register & Claim ₹50 Bonus</div>
+                <div style="font-size: 12px; color: #CBD5E1; margin-top: 4px; line-height: 1.4;">Sign in to unlock exclusive wallet discounts and track doorstep deliveries.</div>
+                <button onclick="toggleMobileDrawer(); openAuthModal('signup');" class="drawer-auth-btn" style="margin-top: 12px; margin-bottom: 0;">
+                    <span>👤</span>
+                    <span>Sign In / Register (+₹50)</span>
+                </button>
+            </div>
         <?php endif; ?>
 
         <form method="GET" action="index.php" style="margin-bottom: 14px;">
@@ -976,7 +1100,7 @@ $products = $stmt->fetchAll();
                 $waMsg = urlencode("Hello, I want to order *$cleanName* for $currency" . number_format($p['price'], 2) . " from $siteName");
                 ?>
                 <div class="product-card">
-                    <div class="card-img-wrap">
+                    <div class="card-img-wrap" onclick="window.location.href='product.php?id=<?php echo $p['id']; ?>'" style="cursor: pointer;" title="View Product Details">
                         <img src="<?php echo htmlspecialchars($p['image_url'] ?: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=80'); ?>" alt="<?php echo $cleanName; ?>" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=80'">
                         <?php if ($disc > 0): ?>
                             <span class="discount-badge">-<?php echo $disc; ?>% OFF</span>
@@ -985,7 +1109,7 @@ $products = $stmt->fetchAll();
 
                     <div class="card-body">
                         <span class="card-cat"><?php echo htmlspecialchars($p['category_name'] ?? 'Deals'); ?></span>
-                        <h3 class="card-title"><?php echo $cleanName; ?></h3>
+                        <h3 class="card-title" onclick="window.location.href='product.php?id=<?php echo $p['id']; ?>'" style="cursor: pointer;" title="View Product Details"><?php echo $cleanName; ?></h3>
 
                         <div class="price-box">
                             <span class="current-price"><?php echo $currency; ?><?php echo number_format($p['price'], 2); ?></span>
@@ -1399,7 +1523,7 @@ $products = $stmt->fetchAll();
         }
     }
 
-    // Hero Slider JS (Auto slide & responsive)
+    // Hero Slider JS (Auto slide & Touch Finger Swipe)
     let currentSlide = 0;
     const slidesCount = <?php echo count($banners); ?>;
     const slidesContainer = document.getElementById('heroSlides');
@@ -1429,7 +1553,27 @@ $products = $stmt->fetchAll();
     }
 
     if (slidesCount > 1) {
-        setInterval(nextSlide, 4500);
+        setInterval(nextSlide, 5000);
+    }
+
+    // Touch & Finger Swipe on Hero Image Slider
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const heroSliderWrap = document.querySelector('.slider-wrapper');
+    if (heroSliderWrap) {
+        heroSliderWrap.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        heroSliderWrap.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeDistance = touchEndX - touchStartX;
+            if (swipeDistance < -40) {
+                nextSlide(); // Finger swiped left
+            } else if (swipeDistance > 40) {
+                prevSlide(); // Finger swiped right
+            }
+        }, { passive: true });
     }
 
     // Countdown Timer JS (24h loop)
@@ -1473,6 +1617,14 @@ $products = $stmt->fetchAll();
             });
         }
         saveCart();
+
+        // Animate cart badge
+        const badge = document.getElementById('cart-badge-count');
+        if (badge) {
+            badge.style.transform = 'scale(1.4)';
+            setTimeout(() => { badge.style.transform = 'scale(1)'; }, 250);
+        }
+
         openCartDrawer();
     }
 
@@ -1484,6 +1636,11 @@ $products = $stmt->fetchAll();
                 cart = cart.filter(it => it.id !== id);
             }
         }
+        saveCart();
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(it => it.id !== id);
         saveCart();
     }
 
@@ -1506,10 +1663,11 @@ $products = $stmt->fetchAll();
 
         if (cart.length === 0) {
             listEl.innerHTML = `
-                <div style="text-align: center; padding: 40px 12px; color: var(--text-sub);">
-                    <div style="font-size: 36px; margin-bottom: 6px;">🛒</div>
-                    <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main);">Your Cart is Empty</h4>
-                    <p style="font-size: 12px; margin-top: 4px;">Tap "⚡ Buy / Add to Cart" on any product to start.</p>
+                <div style="text-align: center; padding: 48px 16px; color: var(--text-sub);">
+                    <div style="font-size: 42px; margin-bottom: 8px;">🛍️</div>
+                    <h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">Your Cart is Empty</h4>
+                    <p style="font-size: 13px; margin-top: 6px; line-height: 1.5;">Browse our trending hot deals and add items to your cart.</p>
+                    <button onclick="closeCartDrawer()" class="slide-btn" style="margin-top: 16px; display: inline-flex;">Explore Deals Now</button>
                 </div>
             `;
             document.getElementById('cartSubtotal').textContent = `${currency}0.00`;
@@ -1519,22 +1677,31 @@ $products = $stmt->fetchAll();
         }
 
         let subtotal = 0;
-        let html = '';
+        let html = `
+            <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 8px 12px; margin-bottom: 14px; font-size: 12px; font-weight: 700; color: #065F46; display: flex; align-items: center; gap: 6px;">
+                <span>🚚</span>
+                <span>Unlocked FREE Delivery on this order!</span>
+            </div>
+        `;
+
         cart.forEach(item => {
             const lineTotal = item.price * item.quantity;
             subtotal += lineTotal;
             html += `
-                <div style="display: flex; gap: 10px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border);">
-                    <img src="${item.image || 'https://via.placeholder.com/60'}" style="width: 52px; height: 52px; border-radius: 8px; object-fit: cover;">
-                    <div style="flex: 1;">
-                        <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 2px;">${item.name}</h4>
-                        <div style="font-size: 11px; color: var(--text-sub);">${item.color} • ${item.size}</div>
-                        <div style="font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 2px;">${currency}${item.price.toFixed(2)}</div>
+                <div class="cart-item-card">
+                    <img src="${item.image || 'https://via.placeholder.com/64'}" alt="${item.name}">
+                    <div style="flex: 1; min-width: 0;">
+                        <h4 style="font-size: 13px; font-weight: 700; color: #0F172A; margin-bottom: 3px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.name}</h4>
+                        <div style="font-size: 11px; color: var(--text-sub); margin-bottom: 6px;">Variant: ${item.color}</div>
+                        <div style="font-size: 14px; font-weight: 800; color: var(--primary);">${currency}${item.price.toFixed(2)}</div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 4px;">
-                        <button onclick="updateQty('${item.id}', -1)" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">-</button>
-                        <span style="font-size: 12px; font-weight: 700;">${item.quantity}</span>
-                        <button onclick="updateQty('${item.id}', 1)" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid var(--border); background: #fff; cursor: pointer;">+</button>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;">
+                        <button onclick="removeFromCart('${item.id}')" title="Remove" style="background: none; border: none; font-size: 14px; color: #94A3B8; cursor: pointer; padding: 2px;">🗑️</button>
+                        <div style="display: flex; align-items: center; gap: 6px; background: #F1F5F9; border-radius: 8px; padding: 3px 6px;">
+                            <button onclick="updateQty('${item.id}', -1)" style="width: 20px; height: 20px; border-radius: 4px; border: none; background: #fff; cursor: pointer; font-weight: 800; font-size: 12px; display:flex; align-items:center; justify-content:center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">-</button>
+                            <span style="font-size: 12px; font-weight: 800; min-width: 14px; text-align: center;">${item.quantity}</span>
+                            <button onclick="updateQty('${item.id}', 1)" style="width: 20px; height: 20px; border-radius: 4px; border: none; background: #fff; cursor: pointer; font-weight: 800; font-size: 12px; display:flex; align-items:center; justify-content:center; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">+</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1542,14 +1709,17 @@ $products = $stmt->fetchAll();
 
         listEl.innerHTML = html;
         const discountAmount = subtotal * (discountPercent / 100);
-        const total = subtotal - discountAmount;
+        let finalPayable = subtotal - discountAmount;
+        if (walletDeducted > 0) {
+            finalPayable = Math.max(0, finalPayable - walletDeducted);
+        }
 
         document.getElementById('cartSubtotal').textContent = `${currency}${subtotal.toFixed(2)}`;
         document.getElementById('cartDiscount').textContent = `-${currency}${discountAmount.toFixed(2)}`;
-        document.getElementById('cartTotal').textContent = `${currency}${total.toFixed(2)}`;
+        document.getElementById('cartTotal').textContent = `${currency}${finalPayable.toFixed(2)}`;
 
         // Update dynamic QR link
-        updateDynamicPaymentQR(total);
+        updateDynamicPaymentQR(finalPayable);
     }
 
     function applyCoupon() {
@@ -1558,23 +1728,46 @@ $products = $stmt->fetchAll();
         if (code === 'ALIXDEAL50') {
             discountPercent = 50;
             msgEl.style.color = '#10B981';
-            msgEl.textContent = '🎉 Coupon ALIXDEAL50 Applied! 50% discount given.';
+            msgEl.textContent = '🎉 Coupon ALIXDEAL50 Applied! Flat 50% discount applied.';
         } else if (code === 'SAVE100') {
             discountPercent = 20;
             msgEl.style.color = '#10B981';
-            msgEl.textContent = '🎉 Coupon SAVE100 Applied! 20% discount given.';
+            msgEl.textContent = '🎉 Coupon SAVE100 Applied! 20% discount applied.';
         } else {
             msgEl.style.color = '#EF4444';
-            msgEl.textContent = '❌ Invalid coupon. Try ALIXDEAL50';
+            msgEl.textContent = '❌ Invalid promo coupon. Use code ALIXDEAL50';
         }
         renderCart();
     }
 
     function showCheckoutFields() {
         if (cart.length === 0) {
-            alert('Your cart is empty. Please add products first!');
+            Swal.fire('Empty Cart', 'Your cart is empty. Please add items before checking out.', 'info');
             return;
         }
+
+        // If not logged in, prompt user with instant sign-up / login discount!
+        if (!loggedUser) {
+            Swal.fire({
+                title: '🎁 Claim ₹50 Wallet Discount!',
+                text: 'Sign up or login now to claim ₹50 wallet discount on this order and track real-time delivery.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#FF5722',
+                cancelButtonColor: '#64748B',
+                confirmButtonText: '👤 Sign In / Register (+₹50)',
+                cancelButtonText: '⚡ Continue as Guest'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    openAuthModal('signup');
+                } else {
+                    document.getElementById('checkoutFormBlock').style.display = 'block';
+                    document.getElementById('btnProceedCheckout').style.display = 'none';
+                }
+            });
+            return;
+        }
+
         document.getElementById('checkoutFormBlock').style.display = 'block';
         document.getElementById('btnProceedCheckout').style.display = 'none';
     }
@@ -1658,8 +1851,11 @@ $products = $stmt->fetchAll();
         document.getElementById('successModal').classList.remove('open');
     }
 
-    // Initialize cart badge
+    // Initialize cart badge & auto-open if requested
     renderCart();
+    if (new URLSearchParams(window.location.search).get('open_cart') === '1') {
+        openCartDrawer();
+    }
 </script>
 
 </body>

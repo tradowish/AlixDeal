@@ -1,18 +1,23 @@
-Options -Indexes +FollowSymLinks
+Options -Indexes +MultiViews +FollowSymLinks
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # 1. Never rewrite install, admin, or api directories
-    RewriteRule ^(install|admin|api) - [L]
+    # 1. Fix duplicate public_html in path (e.g., from old browser cache)
+    RewriteCond %{THE_REQUEST} /public_html/public_html/ [NC]
+    RewriteRule ^public_html/(.*)$ $1 [R=302,L]
 
-    # 2. Clean aliases for customer storefront
+    # 2. Never rewrite installer or API
+    RewriteRule ^(install|api) - [L]
+
+    # 3. Clean aliases
     RewriteRule ^track-order/?$ track_order.php [L]
     RewriteRule ^sitemap\.xml/?$ sitemap.php [L]
+    RewriteRule ^admin/login/?$ admin/login.php [L]
 
-    # 3. Route clean URLs to .php for storefront only (if file exists)
+    # 4. Route clean URLs to .php for files that exist
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME}.php -f
-    RewriteRule ^([^/]+)/?$ $1.php [L]
+    RewriteRule ^(.*)$ $1.php [L]
 </IfModule>
 
 # Security headers
