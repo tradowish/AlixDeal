@@ -146,14 +146,159 @@ $products = $stmt->fetchAll();
             line-height: 1.5;
         }
 
+        @keyframes pulseGlow {
+            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .pulse-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulseGlow 1.8s infinite;
+            vertical-align: middle;
+        }
+        .badge-store-status {
+            background: #ECFDF5;
+            color: #065F46;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid #A7F3D0;
+            display: inline-flex;
+            align-items: center;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
         .announcement-bar {
-            background: linear-gradient(90deg, #FF5722, #FF9800);
+            background: linear-gradient(90deg, #FF5722 0%, #EA580C 50%, #F59E0B 100%);
             color: #fff;
             text-align: center;
             padding: 8px 12px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             letter-spacing: 0.2px;
+            box-shadow: 0 2px 8px rgba(255, 87, 34, 0.25);
+        }
+
+        /* --- TRUST HIGHLIGHTS BAR --- */
+        .trust-bar {
+            max-width: 1200px;
+            margin: 14px auto 0;
+            padding: 0 16px;
+        }
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+        }
+        @media (max-width: 768px) {
+            .trust-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 10px;
+            }
+        }
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .trust-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #FFF7ED;
+            color: #EA580C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            border: 1px solid #FFEDD5;
+        }
+        .trust-text h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+        }
+        .trust-text p {
+            font-size: 10px;
+            color: var(--text-sub);
+            margin: 0;
+        }
+
+        /* --- MOBILE BOTTOM FLOATING NAVIGATION BAR --- */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border);
+            padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+            z-index: 999;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+            justify-content: space-around;
+            align-items: center;
+        }
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: flex;
+            }
+            body {
+                padding-bottom: 70px;
+            }
+        }
+        .mob-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-sub);
+            font-size: 10px;
+            font-weight: 600;
+            gap: 3px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .mob-nav-item.active, .mob-nav-item:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+        .mob-nav-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .mob-cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 4px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
         }
 
         /* Header Navigation */
@@ -914,11 +1059,10 @@ $products = $stmt->fetchAll();
 <body>
 
 <!-- Announcement Bar -->
-<?php if (!empty($announcement)): ?>
-    <div class="announcement-bar">
-        <?php echo htmlspecialchars($announcement); ?>
-    </div>
-<?php endif; ?>
+<div class="announcement-bar">
+    <span class="pulse-dot"></span>
+    <span>⚡ <?php echo htmlspecialchars($announcement ?: 'SPECIAL SALE LIVE'); ?> • 100% Free Shipping Across India!</span>
+</div>
 
 <!-- Header Navigation -->
 <header class="header">
@@ -930,6 +1074,7 @@ $products = $stmt->fetchAll();
             <a href="index.php" class="logo">
                 <span>🔥</span>
                 <span><?php echo htmlspecialchars($siteName); ?></span>
+                <span class="badge-store-status"><span class="pulse-dot"></span> LIVE</span>
             </a>
         </div>
 
@@ -1048,6 +1193,40 @@ $products = $stmt->fetchAll();
     </div>
 </section>
 
+<!-- Trust Highlights Bar (Visually Distinct & High Converting) -->
+<section class="trust-bar">
+    <div class="trust-grid">
+        <div class="trust-item">
+            <div class="trust-icon">🚀</div>
+            <div class="trust-text">
+                <h4>Express Delivery</h4>
+                <p>Dispatched in 24 Hrs across India</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">🛡️</div>
+            <div class="trust-text">
+                <h4>100% Genuine</h4>
+                <p>Brand verified deals only</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">💵</div>
+            <div class="trust-text">
+                <h4>Cash on Delivery</h4>
+                <p>Pay safely at your doorstep</p>
+            </div>
+        </div>
+        <div class="trust-item">
+            <div class="trust-icon">🔄</div>
+            <div class="trust-text">
+                <h4>7-Day Free Returns</h4>
+                <p>Hassle-free instant replacement</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Flash Deals Countdown Bar -->
 <section class="flash-bar">
     <div class="flash-card">
@@ -1100,16 +1279,24 @@ $products = $stmt->fetchAll();
                 $waMsg = urlencode("Hello, I want to order *$cleanName* for $currency" . number_format($p['price'], 2) . " from $siteName");
                 ?>
                 <div class="product-card">
-                    <div class="card-img-wrap" onclick="window.location.href='product.php?id=<?php echo $p['id']; ?>'" style="cursor: pointer;" title="View Product Details">
+                    <a href="product.php?id=<?php echo $p['id']; ?>" class="card-img-wrap" style="display: block; text-decoration: none;" title="View <?php echo $cleanName; ?> Details">
                         <img src="<?php echo htmlspecialchars($p['image_url'] ?: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=80'); ?>" alt="<?php echo $cleanName; ?>" class="card-img" onerror="this.src='https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=80'">
                         <?php if ($disc > 0): ?>
                             <span class="discount-badge">-<?php echo $disc; ?>% OFF</span>
                         <?php endif; ?>
-                    </div>
+                    </a>
 
                     <div class="card-body">
                         <span class="card-cat"><?php echo htmlspecialchars($p['category_name'] ?? 'Deals'); ?></span>
-                        <h3 class="card-title" onclick="window.location.href='product.php?id=<?php echo $p['id']; ?>'" style="cursor: pointer;" title="View Product Details"><?php echo $cleanName; ?></h3>
+                        <a href="product.php?id=<?php echo $p['id']; ?>" style="text-decoration: none; color: inherit;" title="View Details">
+                            <h3 class="card-title"><?php echo $cleanName; ?></h3>
+                        </a>
+
+                        <div style="display:flex; align-items:center; gap:4px; font-size:11px; margin-bottom:6px; color:#F59E0B;">
+                            <span>⭐⭐⭐⭐⭐</span>
+                            <span style="font-weight:700; color:#334155; font-size:10px;">4.9</span>
+                            <span style="color:#94A3B8; font-size:10px;">(1.2k+ sold)</span>
+                        </div>
 
                         <div class="price-box">
                             <span class="current-price"><?php echo $currency; ?><?php echo number_format($p['price'], 2); ?></span>
@@ -1350,10 +1537,41 @@ $products = $stmt->fetchAll();
             </ul>
         </div>
     </div>
-    <div style="max-width: 1200px; margin: 16px auto 0; text-align: center; font-size: 11px;">
-        © <?php echo date('Y'); ?> <?php echo htmlspecialchars($siteName); ?>. All rights reserved.
+    <div style="max-width: 1200px; margin: 16px auto 0; text-align: center; font-size: 11px; display: flex; flex-direction: column; gap: 6px; align-items: center;">
+        <div>© <?php echo date('Y'); ?> <?php echo htmlspecialchars($siteName); ?>. All rights reserved.</div>
+        <div style="background: rgba(255,255,255,0.08); padding: 4px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.2);">
+            <span class="pulse-dot" style="background:#38BDF8;"></span>
+            <span>⚡ AlixDeal Production Build v2.2 • Subdomain Live System</span>
+        </div>
     </div>
 </footer>
+
+<!-- Mobile Floating Bottom App Navigation Bar -->
+<nav class="mobile-bottom-nav">
+    <a href="index.php" class="mob-nav-item active">
+        <span class="mob-nav-icon">🏠</span>
+        <span class="mob-nav-label">Home</span>
+    </a>
+    <a href="#products" class="mob-nav-item">
+        <span class="mob-nav-icon">🔥</span>
+        <span class="mob-nav-label">Deals</span>
+    </a>
+    <a href="javascript:void(0)" onclick="openCartDrawer()" class="mob-nav-item">
+        <div style="position: relative; display: inline-block;">
+            <span class="mob-nav-icon">🛍️</span>
+            <span class="mob-cart-badge" id="mobBottomCartBadge">0</span>
+        </div>
+        <span class="mob-nav-label">Cart</span>
+    </a>
+    <a href="track_order.php" class="mob-nav-item">
+        <span class="mob-nav-icon">📦</span>
+        <span class="mob-nav-label">Track</span>
+    </a>
+    <a href="my_account.php" class="mob-nav-item">
+        <span class="mob-nav-icon">👤</span>
+        <span class="mob-nav-label">Account</span>
+    </a>
+</nav>
 
 <!-- Custom Footer Scripts -->
 <?php if (!empty($settings['footer_scripts'])): ?>
@@ -1618,11 +1836,16 @@ $products = $stmt->fetchAll();
         }
         saveCart();
 
-        // Animate cart badge
+        // Animate cart badges
         const badge = document.getElementById('cart-badge-count');
+        const mobBadge = document.getElementById('mobBottomCartBadge');
         if (badge) {
             badge.style.transform = 'scale(1.4)';
             setTimeout(() => { badge.style.transform = 'scale(1)'; }, 250);
+        }
+        if (mobBadge) {
+            mobBadge.style.transform = 'scale(1.4)';
+            setTimeout(() => { mobBadge.style.transform = 'scale(1)'; }, 250);
         }
 
         openCartDrawer();
@@ -1658,8 +1881,10 @@ $products = $stmt->fetchAll();
     function renderCart() {
         const listEl = document.getElementById('cartItemList');
         const badgeCount = document.getElementById('cart-badge-count');
+        const mobBadge = document.getElementById('mobBottomCartBadge');
         const totalItems = cart.reduce((acc, it) => acc + it.quantity, 0);
         if (badgeCount) badgeCount.textContent = totalItems;
+        if (mobBadge) mobBadge.textContent = totalItems;
 
         if (cart.length === 0) {
             listEl.innerHTML = `
