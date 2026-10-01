@@ -1,22 +1,31 @@
 Options -Indexes +FollowSymLinks
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# 1. Strip index.php from URL (e.g. /public_html/index.php -> /public_html/)
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
-RewriteRule ^ %1/ [R=301,L]
+    # 1. Do NOT touch or rewrite installer or API requests
+    RewriteRule ^(install|api) - [L]
 
-# 2. Redirect .php to clean URL (e.g. /track_order.php -> /track_order)
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.php [NC]
-RewriteRule ^ %1 [R=301,L]
+    # 2. Never redirect POST requests (prevents losing form submissions)
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteCond %{REQUEST_URI} !^/(install|api) [NC]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
+    RewriteRule ^ %1/ [R=301,L]
 
-# 3. Route clean URLs to .php files internally
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
+    # 3. Clean URLs for storefront (only GET requests, exclude install and api)
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteCond %{REQUEST_URI} !^/(install|api) [NC]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^.]+)\.php [NC]
+    RewriteRule ^ %1 [R=301,L]
 
-# 4. Custom clean alias
-RewriteRule ^track-order/?$ track_order.php [L]
-RewriteRule ^sitemap\.xml/?$ sitemap.php [L]
+    # 4. Route clean URLs to .php files internally
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.*)$ $1.php [L]
+
+    # 5. Clean aliases
+    RewriteRule ^track-order/?$ track_order.php [L]
+    RewriteRule ^sitemap\.xml/?$ sitemap.php [L]
+</IfModule>
 
 # Security headers
 <IfModule mod_headers.c>

@@ -1,11 +1,15 @@
 Options -Indexes +FollowSymLinks
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    RewriteEngine On
 
-# 1. Strip index.php from URL
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
-RewriteRule ^ %1/ [R=301,L]
+    # 1. Do not redirect POST requests or install requests
+    RewriteCond %{REQUEST_METHOD} !POST
+    RewriteCond %{REQUEST_URI} !install [NC]
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.*)/index\.php [NC]
+    RewriteRule ^ %1/ [R=301,L]
 
-# 2. If public_html directory is present, rewrite clean requests through public_html
-RewriteCond %{REQUEST_URI} !^/public_html/
-RewriteCond %{DOCUMENT_ROOT}/public_html -d
-RewriteRule ^(.*)$ public_html/$1 [L]
+    # 2. If public_html directory is present, route clean requests through public_html
+    RewriteCond %{REQUEST_URI} !^/public_html/
+    RewriteCond %{DOCUMENT_ROOT}/public_html -d
+    RewriteRule ^(.*)$ public_html/$1 [L]
+</IfModule>

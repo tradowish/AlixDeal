@@ -1,0 +1,4 @@
+# Disable URL rewrite engine for installer
+<IfModule mod_rewrite.c>
+    RewriteEngine Off
+</IfModule>
